@@ -9,7 +9,7 @@ interface UserState {
   consecutiveAttendanceDays: number;
   lastAttendanceDate: string | null;
   isLoading: boolean;
-  fetchProfile: () => Promise<void>;
+  fetchProfile: (token?: string) => Promise<void>;
   updateGold: (amount: number) => void;
   updateStones: (amount: number) => void;
   checkAttendance: () => Promise<void>;
@@ -22,10 +22,11 @@ export const useUserStore = create<UserState>((set, get) => ({
   lastAttendanceDate: null,
   isLoading: false,
 
-  fetchProfile: async () => {
+  fetchProfile: async (token?: string) => {
     try {
       set({ isLoading: true });
-      const response = await api.get<User>('/auth/profile');
+      const headers = token ? { Authorization: `Bearer ${token}` } : {};
+      const response = await api.get<User>('/auth/profile', { headers });
       const { gold, stones, consecutiveAttendanceDays, lastAttendanceDate } = response.data;
       set({
         gold,

@@ -11,6 +11,7 @@ import Button from '@/components/common/Button';
 import Loading from '@/components/common/Loading';
 import Link from 'next/link';
 import { formatNumber } from '@/lib/utils';
+import { getToken } from '@/lib/auth';
 
 export default function HomePage() {
   const router = useRouter();
@@ -21,17 +22,26 @@ export default function HomePage() {
 
   useEffect(() => {
     const init = async () => {
-      const isAuthed = await checkAuth();
-      if (!isAuthed) {
-        router.push('/login');
+      // If already authenticated from a previous login, skip checkAuth and fetch data
+      if (isAuthenticated) {
+        const token = getToken();
+        console.log('Token being sent to fetchProfile/fetchWeapons:', token);
+        await fetchProfile(token || undefined);
+        await fetchWeapons(token || undefined);
       } else {
+        // Otherwise, check authentication (e.g., on fresh load/refresh)
+        const isAuthed = await checkAuth();
+        if (!isAuthed) {
+          router.push('/login');
+          return; // Ensure no further operations if not authenticated
+        }
         await fetchProfile();
         await fetchWeapons();
       }
       setIsLoading(false);
     };
     init();
-  }, []);
+  }, [isAuthenticated, router, checkAuth, fetchProfile, fetchWeapons]); // Added dependencies to useEffect
 
   if (isLoading) {
     return <Loading />;
@@ -40,7 +50,6 @@ export default function HomePage() {
   if (!isAuthenticated) {
     return null;
   }
-
   const equippedWeapon = weapons.find((w) => w.isEquipped);
 
   return (

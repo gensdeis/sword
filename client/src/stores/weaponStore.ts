@@ -7,7 +7,7 @@ interface WeaponState {
   weapons: Weapon[];
   selectedWeapon: Weapon | null;
   isLoading: boolean;
-  fetchWeapons: () => Promise<void>;
+  fetchWeapons: (token?: string) => Promise<void>;
   equipWeapon: (weaponId: number) => Promise<void>;
   sellWeapon: (weaponId: number) => Promise<void>;
   setSelectedWeapon: (weapon: Weapon | null) => void;
@@ -18,10 +18,11 @@ export const useWeaponStore = create<WeaponState>((set, get) => ({
   selectedWeapon: null,
   isLoading: false,
 
-  fetchWeapons: async () => {
+  fetchWeapons: async (token?: string) => {
     try {
       set({ isLoading: true });
-      const response = await api.get<Weapon[]>('/weapons/my');
+      const headers = token ? { Authorization: `Bearer ${token}` } : {};
+      const response = await api.get<Weapon[]>('/weapons/my', { headers });
       set({ weapons: response.data });
     } catch (error) {
       console.error('Fetch weapons failed:', error);
