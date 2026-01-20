@@ -1,0 +1,91 @@
+version: '3.8'
+
+services:
+  # MySQL Database
+  mysql:
+    image: mysql:8.0
+    container_name: sword-mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root1234
+      MYSQL_DATABASE: sword_game
+      MYSQL_USER: sword_user
+      MYSQL_PASSWORD: sword_pass
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+    command: --default-authentication-plugin=mysql_native_password
+    networks:
+      - sword-network
+
+  # Redis
+  redis:
+    image: redis:7-alpine
+    container_name: sword-redis
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+    networks:
+      - sword-network
+
+  # NestJS Server
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: sword-server
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: development
+      DATABASE_HOST: mysql
+      DATABASE_PORT: 3306
+      DATABASE_USER: sword_user
+      DATABASE_PASSWORD: sword_pass
+      DATABASE_NAME: sword_game
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      JWT_SECRET: sword_game_super_secret_key_change_in_production
+    depends_on:
+      - mysql
+      - redis
+    volumes:
+      - ./server:/app
+      - /app/node_modules
+    networks:
+      - sword-network
+
+  # Next.js Client
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    container_name: sword-client
+    restart: always
+    ports:
+      - "3001:3000"
+    environment:
+      NODE_ENV: development
+      NEXT_PUBLIC_API_URL: http://localhost:3000
+    depends_on:
+      - server
+    volumes:
+      - ./client:/app
+      - /app/node_modules
+      - /app/.next
+    networks:
+      - sword-network
+
+volumes:
+  mysql_data:
+  redis_data:
+
+networks:
+  sword-network:
+    driver: bridge
