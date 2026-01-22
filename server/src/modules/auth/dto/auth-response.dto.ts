@@ -6,7 +6,7 @@ export class AuthResponseDto {
     description: 'JWT access token',
     example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
   })
-  access_token: string;
+  accessToken: string;
 
   @ApiProperty({
     description: 'User information',
@@ -14,8 +14,8 @@ export class AuthResponseDto {
   })
   user: UserResponseDto;
 
-  constructor(access_token: string, user: UserResponseDto) {
-    this.access_token = access_token;
+  constructor(accessToken: string, user: UserResponseDto) {
+    this.accessToken = accessToken;
     this.user = user;
   }
 }

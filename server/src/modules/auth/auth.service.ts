@@ -20,7 +20,7 @@ export class AuthService {
 
     // Generate JWT token
     const payload = { sub: user.id, email: user.email };
-    const access_token = this.jwtService.sign(payload);
+    const accessToken = this.jwtService.sign(payload);
 
     // Return response with token and user info
     const userResponse = new UserResponseDto({
@@ -33,7 +33,7 @@ export class AuthService {
       updatedAt: user.updatedAt,
     });
 
-    return new AuthResponseDto(access_token, userResponse);
+    return new AuthResponseDto(accessToken, userResponse);
   }
 
   async login(loginDto: LoginDto): Promise<AuthResponseDto> {
@@ -47,7 +47,7 @@ export class AuthService {
 
     // Generate JWT token
     const payload = { sub: user.id, email: user.email };
-    const access_token = this.jwtService.sign(payload);
+    const accessToken = this.jwtService.sign(payload);
 
     // Return response with token and user info
     const userResponse = new UserResponseDto({
@@ -60,7 +60,7 @@ export class AuthService {
       updatedAt: user.updatedAt,
     });
 
-    return new AuthResponseDto(access_token, userResponse);
+    return new AuthResponseDto(accessToken, userResponse);
   }
 
   async validateUser(email: string, password: string) {

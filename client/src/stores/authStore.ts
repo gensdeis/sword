@@ -11,7 +11,7 @@ interface AuthState {
   login: (data: LoginRequest) => Promise<void>;
   register: (data: RegisterRequest) => Promise<void>;
   logout: () => void;
-  checkAuth: () => Promise<void>;
+  checkAuth: () => Promise<boolean>;
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
