@@ -4,7 +4,7 @@ export interface User {
   username: string;
   email: string;
   gold: number;
-  stones: number;
+  enhancementStones: number;
   currentSeasonId?: number;
   consecutiveAttendanceDays: number;
   lastAttendanceDate?: string;
@@ -60,6 +60,7 @@ export interface GachaSession {
   weapon: Weapon;
   rerollCount: number;
   rerollCost: number;
+  canReroll: boolean;
 }
 
 // Battle types
@@ -124,6 +125,8 @@ export interface Mail {
 }
 
 // API Response types
+export * from './api';
+
 export interface ApiError {
   statusCode: number;
   message: string;

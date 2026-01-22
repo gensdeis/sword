@@ -21,6 +21,7 @@ import {
 import { EnhancementService } from './enhancement.service';
 import { EnhanceResponseDto } from './dto/enhance-response.dto';
 import { EnhancementHistoryResponseDto } from './dto/enhancement-history-response.dto';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 @ApiTags('Enhancement')
 @Controller()
@@ -29,7 +30,7 @@ export class EnhancementController {
 
   @Post('weapons/:id/enhance')
   @HttpCode(HttpStatus.OK)
-  // @UseGuards(JwtAuthGuard) // Uncomment when auth is ready
+  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({
     summary: 'Enhance a weapon',
@@ -58,9 +59,7 @@ export class EnhancementController {
     @Param('id', ParseIntPipe) weaponId: number,
     @Request() req: any,
   ): Promise<EnhanceResponseDto> {
-    // TODO: Get userId from authenticated request
-    // const userId = req.user.id;
-    const userId = 1; // Temporary placeholder
+    const userId = req.user.id;
 
     const result = await this.enhancementService.enhanceWeapon(userId, weaponId);
 
@@ -76,7 +75,7 @@ export class EnhancementController {
   }
 
   @Get('enhancement/history')
-  // @UseGuards(JwtAuthGuard) // Uncomment when auth is ready
+  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({
     summary: 'Get enhancement history',
@@ -97,9 +96,7 @@ export class EnhancementController {
     @Request() req: any,
     @Query('limit') limit?: number,
   ): Promise<EnhancementHistoryResponseDto> {
-    // TODO: Get userId from authenticated request
-    // const userId = req.user.id;
-    const userId = 1; // Temporary placeholder
+    const userId = req.user.id;
 
     const result = await this.enhancementService.getEnhancementHistory(
       userId,

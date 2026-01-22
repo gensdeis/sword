@@ -1,9 +1,8 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
 import { useUserStore } from '@/stores/userStore';
-import { useWeaponStore } from '@/stores/weaponStore';
-import { GachaSession, Weapon } from '@/types';
+import { useGachaStore } from '@/stores/gachaStore';
 import api from '@/lib/api';
 import Button from '@/components/common/Button';
 import Card from '@/components/common/Card';
@@ -14,67 +13,54 @@ import { formatNumber } from '@/lib/utils';
 const PULL_COST = 1000;
 
 export default function GachaMachine() {
-  const { gold, fetchProfile } = useUserStore();
-  const { fetchWeapons } = useWeaponStore();
-  const [isLoading, setIsLoading] = useState(false);
-  const [gachaSession, setGachaSession] = useState<GachaSession | null>(null);
+  const { user, fetchProfile } = useUserStore();
+  const { gachaSession, isLoading, getActiveSession, pull, reroll, keep } = useGachaStore();
+
+  const gold = user?.gold ?? 0;
+
+  useEffect(() => {
+    // Fetch active session on mount
+    getActiveSession();
+    fetchProfile(); // Ensure user profile is up-to-date
+  }, [getActiveSession, fetchProfile]);
 
   const handlePull = async () => {
     if (gold < PULL_COST) {
       toast.error('골드가 부족합니다!');
       return;
     }
-
     try {
-      setIsLoading(true);
-      const response = await api.post<GachaSession>('/gacha/pull');
-      setGachaSession(response.data);
-      await fetchProfile();
+      await pull();
     } catch (error) {
-      console.error('Gacha pull failed:', error);
-    } finally {
-      setIsLoading(false);
+      // Error handled in store, no need to re-throw or toast here
     }
   };
 
   const handleReroll = async () => {
     if (!gachaSession) return;
-
     if (gold < gachaSession.rerollCost) {
       toast.error('골드가 부족합니다!');
       return;
     }
-
     try {
-      setIsLoading(true);
-      const response = await api.post<GachaSession>(
-        `/gacha/reroll/${gachaSession.sessionId}`
-      );
-      setGachaSession(response.data);
-      await fetchProfile();
+      await reroll();
     } catch (error) {
-      console.error('Gacha reroll failed:', error);
-    } finally {
-      setIsLoading(false);
+      // Error handled in store
     }
   };
 
   const handleKeep = async () => {
     if (!gachaSession) return;
-
     try {
-      setIsLoading(true);
-      await api.post(`/gacha/keep/${gachaSession.sessionId}`);
-      toast.success('무기를 획득했습니다!');
-      setGachaSession(null);
-      await fetchWeapons();
-      await fetchProfile();
+      await keep();
     } catch (error) {
-      console.error('Gacha keep failed:', error);
-    } finally {
-      setIsLoading(false);
+      // Error handled in store
     }
   };
+
+  if (isLoading) {
+    return <p>로딩 중...</p>; // Or a proper loading spinner
+  }
 
   return (
     <div className="max-w-2xl mx-auto">
@@ -124,7 +110,7 @@ export default function GachaMachine() {
               onReroll={handleReroll}
               onKeep={handleKeep}
               isLoading={isLoading}
-              canReroll={gold >= gachaSession.rerollCost}
+              canReroll={gachaSession.canReroll && gold >= gachaSession.rerollCost}
             />
           )}
         </div>

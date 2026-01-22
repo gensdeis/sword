@@ -143,7 +143,7 @@ export const GAME_CONFIG = {
 
   // === Attendance System ===
   ATTENDANCE: {
-    DAILY_GOLD: 200,
+    DAILY_GOLD: 60000,
   },
 
   // === Sell System ===

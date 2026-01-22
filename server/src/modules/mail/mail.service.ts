@@ -227,7 +227,7 @@ export class MailService {
         isEquipped: false,
         isDestroyed: false,
       });
-      const savedWeapon = await this.userWeaponRepository.save(userWeapon);
+      const savedWeapon: UserWeapon = await this.userWeaponRepository.save(userWeapon);
       weaponReceived = Number(savedWeapon.id);
     }
 

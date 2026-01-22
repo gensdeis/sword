@@ -15,19 +15,21 @@ import { getToken } from '@/lib/auth';
 
 export default function HomePage() {
   const router = useRouter();
-  const { isAuthenticated, checkAuth, user } = useAuthStore();
-  const { gold, stones, consecutiveAttendanceDays, fetchProfile } = useUserStore();
+  const { user: authUser, checkAuth } = useAuthStore();
+  const { user, fetchProfile } = useUserStore();
   const { weapons, fetchWeapons } = useWeaponStore();
   const [isLoading, setIsLoading] = React.useState(true);
 
   useEffect(() => {
     const init = async () => {
       // If already authenticated from a previous login, skip checkAuth and fetch data
-      if (isAuthenticated) {
+      if (authUser) {
         const token = getToken();
         console.log('Token being sent to fetchProfile/fetchWeapons:', token);
-        await fetchProfile(token || undefined);
-        await fetchWeapons(token || undefined);
+        await Promise.all([
+          fetchProfile(token || undefined),
+          fetchWeapons(token || undefined),
+        ]);
       } else {
         // Otherwise, check authentication (e.g., on fresh load/refresh)
         const isAuthed = await checkAuth();
@@ -35,19 +37,18 @@ export default function HomePage() {
           router.push('/login');
           return; // Ensure no further operations if not authenticated
         }
-        await fetchProfile();
-        await fetchWeapons();
+        await Promise.all([fetchProfile(), fetchWeapons()]);
       }
       setIsLoading(false);
     };
     init();
-  }, [isAuthenticated, router, checkAuth, fetchProfile, fetchWeapons]); // Added dependencies to useEffect
+  }, [authUser, router, checkAuth, fetchProfile, fetchWeapons]); // Added dependencies to useEffect
 
-  if (isLoading) {
+  if (isLoading || !user) {
     return <Loading />;
   }
 
-  if (!isAuthenticated) {
+  if (!authUser) {
     return null;
   }
   const equippedWeapon = weapons.find((w) => w.isEquipped);
@@ -65,7 +66,7 @@ export default function HomePage() {
               <div className="text-center">
                 <span className="text-4xl mb-2">💰</span>
                 <h3 className="text-lg font-semibold text-gray-700">골드</h3>
-                <p className="text-3xl font-bold text-yellow-600">{formatNumber(gold)}</p>
+                <p className="text-3xl font-bold text-yellow-600">{formatNumber(user.gold)}</p>
               </div>
             </Card>
 
@@ -73,7 +74,7 @@ export default function HomePage() {
               <div className="text-center">
                 <span className="text-4xl mb-2">💎</span>
                 <h3 className="text-lg font-semibold text-gray-700">보석</h3>
-                <p className="text-3xl font-bold text-blue-600">{formatNumber(stones)}</p>
+                <p className="text-3xl font-bold text-blue-600">{formatNumber(user.enhancementStones)}</p>
               </div>
             </Card>
 
@@ -91,7 +92,7 @@ export default function HomePage() {
             <div className="text-center">
               <h3 className="text-xl font-bold mb-2">출석 체크</h3>
               <p className="text-gray-600">
-                연속 출석: <span className="font-bold text-blue-600">{consecutiveAttendanceDays}일</span>
+                연속 출석: <span className="font-bold text-blue-600">{user.consecutiveAttendanceDays}일</span>
               </p>
               <p className="text-sm text-gray-500 mt-1">매일 출석하여 보상을 받으세요!</p>
             </div>

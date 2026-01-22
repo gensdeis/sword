@@ -248,7 +248,7 @@ export class WeaponsService {
 
     return {
       id: weapon.id,
-      userId: weapon.userId,
+      userId: weapon.userId, // Access userId through the user relation
       weaponTemplateId: weapon.weaponTemplateId,
       enhancementLevel: weapon.enhancementLevel,
       isEquipped: weapon.isEquipped,

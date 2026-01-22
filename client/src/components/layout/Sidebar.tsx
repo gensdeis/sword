@@ -8,6 +8,7 @@ import { cn } from '@/lib/utils';
 const menuItems = [
   { href: '/', label: '대시보드', icon: '🏠' },
   { href: '/weapons', label: '내 무기', icon: '⚔️' },
+  { href: '/enhancement', label: '강화', icon: '🔨' },
   { href: '/gacha', label: '뽑기', icon: '🎰' },
   { href: '/battle', label: '전투', icon: '⚡' },
   { href: '/ranking', label: '랭킹', icon: '🏆' },

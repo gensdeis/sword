@@ -238,7 +238,7 @@ INSERT INTO `game_config` (`config_key`, `config_value`, `description`) VALUES
 ('prayer_neutral_rate', '40', 'Probability for neutral prayer result (%)'),
 ('prayer_success_bonus', '5', 'Enhancement success rate bonus from prayer (%p)'),
 ('prayer_destruction_penalty', '3', 'Enhancement destruction rate penalty from prayer (%p)'),
-('attendance_daily_gold', '200', 'Daily attendance check reward in gold');
+('attendance_daily_gold', '60000', 'Daily attendance check reward in gold');
 
 -- ============================================
 -- Insert Sample Weapon Templates

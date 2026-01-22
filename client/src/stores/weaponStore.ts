@@ -2,6 +2,8 @@ import { create } from 'zustand';
 import { Weapon } from '@/types';
 import api from '@/lib/api';
 import toast from 'react-hot-toast';
+import { EnhanceResponseDto } from '@/types/api';
+import { EnhanceResponseDto } from '@/types/api';
 
 interface WeaponState {
   weapons: Weapon[];
@@ -10,6 +12,7 @@ interface WeaponState {
   fetchWeapons: (token?: string) => Promise<void>;
   equipWeapon: (weaponId: number) => Promise<void>;
   sellWeapon: (weaponId: number) => Promise<void>;
+  enhanceWeapon: (weaponId: number) => Promise<void>;
   setSelectedWeapon: (weapon: Weapon | null) => void;
 }
 
@@ -47,6 +50,7 @@ export const useWeaponStore = create<WeaponState>((set, get) => ({
       toast.success('무기를 장착했습니다.');
     } catch (error) {
       console.error('Equip weapon failed:', error);
+      toast.error('무기 장착에 실패했습니다.');
     }
   },
 
@@ -67,6 +71,38 @@ export const useWeaponStore = create<WeaponState>((set, get) => ({
       useUserStore.getState().fetchProfile();
     } catch (error) {
       console.error('Sell weapon failed:', error);
+      toast.error('무기 판매에 실패했습니다.');
+    }
+  },
+
+  enhanceWeapon: async (weaponId: number) => {
+    try {
+      const response = await api.post<EnhanceResponseDto>(`/weapons/${weaponId}/enhance`);
+      const { weapon: updatedWeapon, result } = response.data;
+
+      set((state) => ({
+        weapons: state.weapons.map((w) => (w.id === weaponId ? updatedWeapon : w)),
+      }));
+
+      if (result === 'SUCCESS') {
+        toast.success(`강화 성공! (+${updatedWeapon.enhancementLevel})`);
+      } else if (result === 'FAILURE') {
+        toast.error('강화에 실패했습니다.');
+      } else if (result === 'DESTROYED') {
+        toast.error('무기가 파괴되었습니다!', { icon: '💥' });
+        // Remove weapon from local state
+        set((state) => ({
+          weapons: state.weapons.filter((weapon) => weapon.id !== weaponId),
+        }));
+      }
+
+      // Refresh profile to update gold and stones
+      const { useUserStore } = await import('./userStore');
+      useUserStore.getState().fetchProfile();
+    } catch (error: any) {
+      console.error('Enhance weapon failed:', error);
+      const message = error.response?.data?.message || '강화에 실패했습니다.';
+      toast.error(message);
     }
   },
 

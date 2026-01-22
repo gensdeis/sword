@@ -20,7 +20,7 @@ import { PullResponseDto } from './dto/pull-response.dto';
 import { RerollResponseDto } from './dto/reroll-response.dto';
 import { KeepResponseDto } from './dto/keep-response.dto';
 
-interface GachaSession {
+export interface GachaSession {
   sessionId: string;
   userId: number;
   weaponTemplateId: number;
@@ -46,6 +46,20 @@ export class GachaService {
     private redisService: RedisService,
     private weaponsService: WeaponsService,
   ) {}
+
+  async getGachaSessionDetails(session: GachaSession) {
+    const weapon = await this.weaponsService.getWeaponTemplateById(
+      session.weaponTemplateId,
+    );
+    const rerollCost = this.calculateRerollCost(session.rerollCount);
+    return {
+      sessionId: session.sessionId,
+      weapon,
+      rerollCount: session.rerollCount,
+      rerollCost,
+      canReroll: rerollCost !== null,
+    };
+  }
 
   /**
    * Pull a weapon (costs 1000 gold)

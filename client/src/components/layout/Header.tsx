@@ -8,18 +8,33 @@ import Button from '@/components/common/Button';
 import { formatNumber } from '@/lib/utils';
 
 export default function Header() {
-  const { user, logout } = useAuthStore();
-  const { gold, stones, checkAttendance, fetchProfile } = useUserStore();
+  const { user: authUser, logout } = useAuthStore();
+  const { user, checkAttendance, fetchProfile } = useUserStore();
 
   useEffect(() => {
-    if (user) {
+    if (authUser) {
       fetchProfile();
     }
-  }, [user, fetchProfile]);
+  }, [authUser, fetchProfile]);
 
   const handleAttendance = async () => {
     await checkAttendance();
   };
+
+  const hasCheckedInToday = () => {
+    if (!user?.lastAttendanceDate) {
+      return false;
+    }
+    const lastCheck = new Date(user.lastAttendanceDate);
+    const today = new Date();
+    return (
+      lastCheck.getFullYear() === today.getFullYear() &&
+      lastCheck.getMonth() === today.getMonth() &&
+      lastCheck.getDate() === today.getDate()
+    );
+  };
+
+  const isAttendanceChecked = hasCheckedInToday();
 
   return (
     <header className="bg-white shadow-md border-b border-gray-200">
@@ -51,23 +66,23 @@ export default function Header() {
 
           {/* User Info & Actions */}
           <div className="flex items-center space-x-4">
-            {user && (
+            {authUser && user && (
               <>
                 {/* Gold & Stones Display */}
                 <div className="flex items-center space-x-3">
                   <div className="flex items-center bg-yellow-50 border border-yellow-300 rounded-lg px-3 py-1.5">
                     <span className="text-yellow-600 font-semibold mr-1">💰</span>
-                    <span className="text-gray-900 font-medium">{formatNumber(gold)}</span>
+                    <span className="text-gray-900 font-medium">{formatNumber(user.gold)}</span>
                   </div>
                   <div className="flex items-center bg-blue-50 border border-blue-300 rounded-lg px-3 py-1.5">
                     <span className="text-blue-600 font-semibold mr-1">💎</span>
-                    <span className="text-gray-900 font-medium">{formatNumber(stones)}</span>
+                    <span className="text-gray-900 font-medium">{formatNumber(user.enhancementStones)}</span>
                   </div>
                 </div>
 
                 {/* Attendance Button */}
-                <Button size="sm" onClick={handleAttendance}>
-                  출석 체크
+                <Button size="sm" onClick={handleAttendance} disabled={isAttendanceChecked}>
+                  {isAttendanceChecked ? '출석 완료' : '출석 체크'}
                 </Button>
 
                 {/* User Info */}
