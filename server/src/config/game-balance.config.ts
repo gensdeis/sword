@@ -7,7 +7,7 @@ export const GAME_CONFIG = {
   // === Weapon System ===
   WEAPON: {
     MAX_SLOTS: 10,
-    MAX_ENHANCEMENT_LEVEL: 15,
+    MAX_ENHANCEMENT_LEVEL: 20,
   },
 
   // === Gacha System ===
@@ -45,6 +45,11 @@ export const GAME_CONFIG = {
       13: [12, 33, 55],
       14: [10, 30, 60],
       15: [10, 30, 60],
+      16: [8, 27, 65],
+      17: [6, 24, 70],
+      18: [4, 21, 75],
+      19: [2, 18, 80],
+      20: [1, 14, 85],
     },
 
     DOUBLE_JUMP: {

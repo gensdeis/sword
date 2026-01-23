@@ -52,6 +52,15 @@ export class WeaponTemplate {
   @Column({ type: 'varchar', length: 255, nullable: true, name: 'image_url' })
   imageUrl: string;
 
+  @Column({ type: 'int', name: 'base_weapon_id', nullable: true })
+  baseWeaponId: number;
+
+  @Column({ type: 'int', default: 0 })
+  level: number;
+
+  @Column({ type: 'boolean', default: false, name: 'is_hidden' })
+  isHidden: boolean;
+
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 

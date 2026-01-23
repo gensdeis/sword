@@ -104,6 +104,16 @@ export class EnhancementService {
 
       newLevel = weapon.enhancementLevel + levelIncrease;
       weapon.enhancementLevel = newLevel;
+
+      // Update template to the one for the new level
+      const nextTemplate = await this.userWeaponRepository.manager.getRepository(WeaponTemplate).findOne({
+        where: { baseWeaponId: weapon.weaponTemplate.baseWeaponId, level: newLevel },
+      });
+      if (nextTemplate) {
+        weapon.weaponTemplate = nextTemplate;
+        weapon.weaponTemplateId = nextTemplate.id;
+      }
+
       await this.userWeaponRepository.save(weapon);
     } else if (result === EnhancementResult.MAINTAIN) {
       levelIncrease = 0;

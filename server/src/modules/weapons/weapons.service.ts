@@ -3,16 +3,19 @@ import {
   NotFoundException,
   BadRequestException,
   ForbiddenException,
+  OnModuleInit,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, MoreThanOrEqual } from 'typeorm';
+import * as fs from 'fs';
+import * as path from 'path';
 import { UserWeapon, WeaponTemplate, User } from '@/entities';
 import { GAME_CONFIG, calculateSellPrice } from '@/config/game-balance.config';
 import { WeaponResponseDto } from './dto/weapon-response.dto';
 import { SellResponseDto } from './dto/sell-response.dto';
 
 @Injectable()
-export class WeaponsService {
+export class WeaponsService implements OnModuleInit {
   constructor(
     @InjectRepository(UserWeapon)
     private userWeaponRepository: Repository<UserWeapon>,
@@ -21,6 +24,102 @@ export class WeaponsService {
     @InjectRepository(User)
     private userRepository: Repository<User>,
   ) {}
+
+  async onModuleInit() {
+    const count = await this.weaponTemplateRepository.count();
+    // If we have only the 17 initial templates from init.sql, or 0, we import the CSV
+    // (Initial templates have baseWeaponId as null)
+    const newTemplatesCount = await this.weaponTemplateRepository.count({
+      where: { baseWeaponId: MoreThanOrEqual(1) as any },
+    });
+
+    if (newTemplatesCount === 0) {
+      await this.seedWeaponsFromCsv();
+    }
+  }
+
+  async seedWeaponsFromCsv() {
+    console.log('? Seeding weapons from CSV...');
+    try {
+      const csvPath = path.join(process.cwd(), 'server', 'data', 'weapons.csv');
+      if (!fs.existsSync(csvPath)) {
+        console.warn('?? Weapons CSV file not found at:', csvPath);
+        return;
+      }
+
+      const content = fs.readFileSync(csvPath, 'utf8');
+      const lines = content.split('\n');
+      const templates: WeaponTemplate[] = [];
+
+      // Skip header
+      for (let i = 1; i < lines.length; i++) {
+        const line = lines[i].trim();
+        if (!line) continue;
+
+        // Simple CSV parser for quoted strings
+        const parts = [];
+        let current = '';
+        let inQuotes = false;
+        for (let char of line) {
+          if (char === '"') {
+            inQuotes = !inQuotes;
+          } else if (char === ',' && !inQuotes) {
+            parts.push(current);
+            current = '';
+          } else {
+            current += char;
+          }
+        }
+        parts.push(current);
+
+        if (parts.length < 12) continue;
+
+        const [
+          id,
+          base_weapon_id,
+          name,
+          level,
+          rarity,
+          base_attack,
+          can_double_enhance,
+          double_enhance_rate,
+          sell_price_base,
+          sell_price_per_level,
+          description,
+          is_hidden,
+        ] = parts;
+
+        const template = this.weaponTemplateRepository.create({
+          id: parseInt(id),
+          baseWeaponId: parseInt(base_weapon_id),
+          name: name,
+          level: parseInt(level),
+          rarity: rarity as any,
+          baseAttack: parseInt(base_attack),
+          canDoubleEnhance: can_double_enhance === '1',
+          doubleEnhanceRate: parseFloat(double_enhance_rate),
+          sellPriceBase: parseInt(sell_price_base),
+          sellPricePerLevel: parseInt(sell_price_per_level),
+          description: description,
+          isHidden: is_hidden === '1',
+        });
+        templates.push(template);
+      }
+
+      // Clear existing templates with baseWeaponId if any
+      // await this.weaponTemplateRepository.delete({ baseWeaponId: Not(IsNull()) });
+      
+      // Save in chunks to avoid issues with large inserts
+      const chunkSize = 500;
+      for (let i = 0; i < templates.length; i += chunkSize) {
+        await this.weaponTemplateRepository.save(templates.slice(i, i + chunkSize));
+      }
+      
+      console.log(`? Successfully seeded ${templates.length} weapon templates`);
+    } catch (error) {
+      console.error('? Failed to seed weapons from CSV:', error);
+    }
+  }
 
   /**
    * Get user's non-destroyed weapons
@@ -140,10 +239,9 @@ export class WeaponsService {
     }
 
     // Calculate sell price
-    const stonesEarned = calculateSellPrice(
-      weapon.weaponTemplate.rarity,
-      weapon.enhancementLevel,
-    );
+    const stonesEarned = 
+      weapon.weaponTemplate.sellPriceBase + 
+      weapon.weaponTemplate.sellPricePerLevel * weapon.enhancementLevel;
 
     // Soft delete the weapon
     weapon.isDestroyed = true;

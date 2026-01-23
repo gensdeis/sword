@@ -4,7 +4,7 @@ import {
   BadRequestException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, Not, IsNull } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
 import {
   User,
@@ -268,11 +268,27 @@ export class GachaService {
    * Select random weapon by rarity using weighted random selection
    */
   async selectRandomWeaponByRarity(): Promise<WeaponTemplate> {
-    // Get all weapon templates
-    const allWeapons = await this.weaponTemplateRepository.find();
+    // Get all base weapon templates (level 0, not hidden, and part of the new CSV data)
+    const allWeapons = await this.weaponTemplateRepository.find({
+      where: { level: 0, isHidden: false, baseWeaponId: Not(IsNull()) },
+    });
 
     if (allWeapons.length === 0) {
-      throw new BadRequestException('No weapon templates available');
+      // Fallback to any level 0 weapon with baseWeaponId if no non-hidden ones exist
+      const fallbackWeapons = await this.weaponTemplateRepository.find({
+        where: { level: 0, baseWeaponId: Not(IsNull()) },
+      });
+      if (fallbackWeapons.length === 0) {
+        // Ultimate fallback to anything at level 0
+        const ultimateFallback = await this.weaponTemplateRepository.find({
+            where: { level: 0 }
+        });
+        if (ultimateFallback.length === 0) {
+            throw new BadRequestException('No weapon templates available');
+        }
+        return ultimateFallback[Math.floor(Math.random() * ultimateFallback.length)];
+      }
+      return fallbackWeapons[Math.floor(Math.random() * fallbackWeapons.length)];
     }
 
     // First, determine rarity using gacha rates
