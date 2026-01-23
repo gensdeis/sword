@@ -26,15 +26,22 @@ export class WeaponsService implements OnModuleInit {
   ) {}
 
   async onModuleInit() {
-    const count = await this.weaponTemplateRepository.count();
-    // If we have only the 17 initial templates from init.sql, or 0, we import the CSV
-    // (Initial templates have baseWeaponId as null)
-    const newTemplatesCount = await this.weaponTemplateRepository.count({
-      where: { baseWeaponId: MoreThanOrEqual(1) as any },
-    });
+    try {
+      // Check if we need to seed weapons from CSV
+      // We check for templates that have baseWeaponId (new data format)
+      const newTemplatesCount = await this.weaponTemplateRepository.count({
+        where: { baseWeaponId: MoreThanOrEqual(1) as any },
+      });
 
-    if (newTemplatesCount === 0) {
-      await this.seedWeaponsFromCsv();
+      if (newTemplatesCount === 0) {
+        await this.seedWeaponsFromCsv();
+      }
+    } catch (error) {
+      console.error('? Error during WeaponsService initialization:', error.message);
+      // If the error is about a missing column, it might be because synchronize hasn't run or failed
+      if (error.message.includes('base_weapon_id')) {
+        console.log('? The column "base_weapon_id" is missing. If synchronize is enabled, it should be created soon.');
+      }
     }
   }
 
