@@ -10,7 +10,7 @@ import Card from '@/components/common/Card';
 import Button from '@/components/common/Button';
 import Loading from '@/components/common/Loading';
 import Link from 'next/link';
-import { formatNumber } from '@/lib/utils';
+import { formatNumber, calculateTotalAttack } from '@/lib/utils';
 import { getToken } from '@/lib/auth';
 
 export default function HomePage() {
