@@ -74,12 +74,20 @@ export const useGachaStore = create<GachaState>((set, get) => ({
     try {
       set({ isLoading: true });
       await api.post(`/gacha/keep/${sessionId}`);
-      toast.success('무기를 획득했습니다!');
+      
+      // Clear session first to prevent duplicate clicks
       set({ gachaSession: null });
-      useUserStore.getState().fetchProfile();
-      // Also refetch weapons
+
+      // Refresh data
+      const { useUserStore } = await import('./userStore');
       const { useWeaponStore } = await import('./weaponStore');
-      useWeaponStore.getState().fetchWeapons();
+      
+      await Promise.all([
+        useUserStore.getState().fetchProfile(),
+        useWeaponStore.getState().fetchWeapons()
+      ]);
+
+      toast.success('무기를 획득했습니다!');
     } catch (error) {
       console.error('Gacha keep failed:', error);
       toast.error('무기 획득에 실패했습니다.');

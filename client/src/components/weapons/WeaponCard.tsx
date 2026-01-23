@@ -17,7 +17,7 @@ export default function WeaponCard({ weapon, onEquip, onSell, showActions = true
   const totalAttack = calculateTotalAttack(weapon.baseAttack, weapon.enhancementLevel);
 
   return (
-    <Card className={cn('relative', getRarityBgColor(weapon.rarity))}>
+    <Card className={cn('relative flex flex-col h-full', getRarityBgColor(weapon.rarity))}>
       {weapon.isEquipped && (
         <div className="absolute top-2 right-2 bg-green-500 text-white text-xs font-bold px-2 py-1 rounded">
           장착중
@@ -34,7 +34,7 @@ export default function WeaponCard({ weapon, onEquip, onSell, showActions = true
       </div>
 
       {/* Weapon Info */}
-      <div className="space-y-2">
+      <div className="space-y-2 flex-grow">
         <h3 className={cn('text-lg font-bold', getRarityColor(weapon.rarity))}>
           {weapon.weaponName}
           {weapon.enhancementLevel > 0 && (

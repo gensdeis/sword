@@ -75,8 +75,11 @@ export class PrayerService implements OnModuleInit {
    */
   async resetPrayerPool(): Promise<void> {
     await this.redisService.resetPrayerPool();
-    // Reset all users' daily prayer counts
-    await this.userRepository.update({}, { dailyPrayerCount: 0 });
+    // Reset all users' daily prayer counts using QueryBuilder for reliability
+    await this.userRepository.createQueryBuilder()
+      .update(User)
+      .set({ dailyPrayerCount: 0 })
+      .execute();
   }
 
   /**

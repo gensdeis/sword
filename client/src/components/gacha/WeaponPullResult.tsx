@@ -34,14 +34,14 @@ export default function WeaponPullResult({
       <div className={cn('mb-6 p-6 rounded-lg border-4', getRarityBgColor(weapon.rarity))}>
         <div className="flex items-center justify-center h-40 mb-4 bg-white rounded-lg">
           {weapon.imageUrl ? (
-            <img src={weapon.imageUrl} alt={weapon.weaponName} className="h-full object-contain" />
+            <img src={weapon.imageUrl} alt={weapon.weaponName || (weapon as any).name} className="h-full object-contain" />
           ) : (
             <span className="text-8xl">⚔️</span>
           )}
         </div>
 
         <h3 className={cn('text-2xl font-bold mb-2', getRarityColor(weapon.rarity))}>
-          {weapon.weaponName}
+          {weapon.weaponName || (weapon as any).name}
           {enhancementLevel > 0 && (
             <span className="ml-1">+{enhancementLevel}</span>
           )}
