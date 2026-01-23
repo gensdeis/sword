@@ -1,11 +1,11 @@
 import { Weapon } from '.';
 
 export interface EnhanceResponseDto {
-  result: 'SUCCESS' | 'FAILURE' | 'DESTROYED';
-  newLevel: number;
+  result: 'success' | 'maintain' | 'destroyed';
+  newLevel: number | null;
   levelIncrease: number;
-  weapon: Weapon;
+  weapon: Weapon | null;
   successRate: number;
   destructionRate: number;
-  prayerEffect: number;
+  prayerEffect: 'positive' | 'negative' | 'neutral' | 'none';
 }

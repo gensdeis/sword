@@ -3,7 +3,6 @@ import { Weapon } from '@/types';
 import api from '@/lib/api';
 import toast from 'react-hot-toast';
 import { EnhanceResponseDto } from '@/types/api';
-import { EnhanceResponseDto } from '@/types/api';
 
 interface WeaponState {
   weapons: Weapon[];
@@ -80,15 +79,14 @@ export const useWeaponStore = create<WeaponState>((set, get) => ({
       const response = await api.post<EnhanceResponseDto>(`/weapons/${weaponId}/enhance`);
       const { weapon: updatedWeapon, result } = response.data;
 
-      set((state) => ({
-        weapons: state.weapons.map((w) => (w.id === weaponId ? updatedWeapon : w)),
-      }));
-
-      if (result === 'SUCCESS') {
+      if (result === 'success' && updatedWeapon) {
+        set((state) => ({
+          weapons: state.weapons.map((w) => (w.id === weaponId ? updatedWeapon : w)),
+        }));
         toast.success(`강화 성공! (+${updatedWeapon.enhancementLevel})`);
-      } else if (result === 'FAILURE') {
+      } else if (result === 'maintain') {
         toast.error('강화에 실패했습니다.');
-      } else if (result === 'DESTROYED') {
+      } else if (result === 'destroyed') {
         toast.error('무기가 파괴되었습니다!', { icon: '💥' });
         // Remove weapon from local state
         set((state) => ({

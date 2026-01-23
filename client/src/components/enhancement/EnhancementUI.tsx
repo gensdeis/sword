@@ -54,7 +54,7 @@ const EnhancementUI = () => {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {weapons.map((weapon) => (
+            {weapons.filter(w => w !== null).map((weapon) => (
               <div
                 key={weapon.id}
                 className={`cursor-pointer rounded-lg border-2 ${
