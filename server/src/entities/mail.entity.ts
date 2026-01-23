@@ -21,10 +21,7 @@ export enum MailRewardType {
 @Index('idx_user_active', ['userId', 'isDeleted', 'expiresAt'])
 @Index('idx_user_unclaimed', ['userId', 'isClaimed', 'isDeleted'])
 export class Mail {
-  @PrimaryGeneratedColumn({ type: 'bigint', transformer: {
-    to: (value: number) => value,
-    from: (value: string) => parseInt(value, 10),
-  } })
+  @PrimaryGeneratedColumn({ type: 'bigint' })
   id: number;
 
   @Column({ type: 'bigint', name: 'user_id', transformer: {

@@ -19,10 +19,7 @@ export enum PrayerResult {
 @Index('idx_user', ['userId'])
 @Index('idx_pray_date', ['prayedAt'])
 export class PrayerHistory {
-  @PrimaryGeneratedColumn({ type: 'bigint', transformer: {
-    to: (value: number) => value,
-    from: (value: string) => parseInt(value, 10),
-  } })
+  @PrimaryGeneratedColumn({ type: 'bigint' })
   id: number;
 
   @Column({ type: 'bigint', name: 'user_id', transformer: {

@@ -16,10 +16,7 @@ import { UserWeapon } from './user-weapon.entity';
 @Index('idx_season_loser', ['seasonId', 'loserId'])
 @Index('idx_battle_date', ['battleAt'])
 export class BattleRecord {
-  @PrimaryGeneratedColumn({ type: 'bigint', transformer: {
-    to: (value: number) => value,
-    from: (value: string) => parseInt(value, 10),
-  } })
+  @PrimaryGeneratedColumn({ type: 'bigint' })
   id: number;
 
   @Column({ type: 'int', name: 'season_id' })
