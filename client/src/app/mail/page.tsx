@@ -35,7 +35,7 @@ export default function MailPage() {
 
   const fetchMails = async () => {
     try {
-      const response = await api.get<Mail[]>('/mails');
+      const response = await api.get<Mail[]>('/mail');
       setMails(response.data);
     } catch (error) {
       console.error('Fetch mails failed:', error);
@@ -44,7 +44,7 @@ export default function MailPage() {
 
   const handleClaim = async (mailId: number) => {
     try {
-      await api.post(`/mails/${mailId}/claim`);
+      await api.post(`/mail/${mailId}/claim`);
       toast.success('보상을 받았습니다!');
       await fetchMails();
       await fetchProfile();
@@ -59,7 +59,7 @@ export default function MailPage() {
     }
 
     try {
-      await api.delete(`/mails/${mailId}`);
+      await api.delete(`/mail/${mailId}`);
       toast.success('우편을 삭제했습니다.');
       await fetchMails();
     } catch (error) {

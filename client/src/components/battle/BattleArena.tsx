@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useUserStore } from '@/stores/userStore';
 import { Opponent, BattleResult } from '@/types';
 import api from '@/lib/api';
