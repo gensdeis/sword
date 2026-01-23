@@ -202,12 +202,12 @@ export class WeaponsService {
     }
 
     const weapon = this.userWeaponRepository.create({
-      userId,
       weaponTemplateId: templateId,
       enhancementLevel: 0,
       isEquipped,
       isDestroyed: false,
     });
+    weapon.userId = userId;
 
     return await this.userWeaponRepository.save(weapon);
   }

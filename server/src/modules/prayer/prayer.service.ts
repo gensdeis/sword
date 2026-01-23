@@ -30,10 +30,10 @@ export class PrayerService implements OnModuleInit {
 
     // Record in prayer history
     const prayerHistory = this.prayerHistoryRepository.create({
-      userId,
       result,
       wasConsumed: false,
     });
+    prayerHistory.userId = userId;
     await this.prayerHistoryRepository.save(prayerHistory);
 
     // Get updated pool stats

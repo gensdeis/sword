@@ -261,7 +261,6 @@ export class EnhancementService {
   ): Promise<void> {
     const history = this.enhancementHistoryRepository.create({
       userWeaponId: weaponId,
-      userId,
       fromLevel,
       toLevel,
       result,
@@ -269,6 +268,7 @@ export class EnhancementService {
       destructionRate: rates.destruction,
       prayerEffect: prayerEffect === 'none' ? PrayerEffect.NONE : prayerEffect === 'positive' ? PrayerEffect.POSITIVE : prayerEffect === 'negative' ? PrayerEffect.NEGATIVE : PrayerEffect.NEUTRAL,
     });
+    history.userId = userId;
 
     await this.enhancementHistoryRepository.save(history);
   }

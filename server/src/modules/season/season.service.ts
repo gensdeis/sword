@@ -123,15 +123,16 @@ export class SeasonService {
 
     // Save rankings to database
     for (const ranking of rankings) {
-      await this.rankingRepository.save({
+      const rankingRecord = this.rankingRepository.create({
         seasonId,
-        userId: ranking.userId,
         totalPoints: ranking.totalPoints,
         winCount: ranking.winCount,
         loseCount: ranking.loseCount,
         currentStreak: ranking.currentStreak,
         bestStreak: ranking.bestStreak,
       });
+      rankingRecord.userId = ranking.userId;
+      await this.rankingRepository.save(rankingRecord);
     }
 
     // Send reward to rank 1 player

@@ -405,7 +405,21 @@ export class BattleService {
     loserGoldEarned: number;
     winnerStreak: number;
   }): Promise<BattleRecord> {
-    const record = this.battleRecordRepository.create(battleData);
+    const record = this.battleRecordRepository.create({
+      seasonId: battleData.seasonId,
+      winnerWeaponId: battleData.winnerWeaponId,
+      loserWeaponId: battleData.loserWeaponId,
+      winnerWeaponLevel: battleData.winnerWeaponLevel,
+      loserWeaponLevel: battleData.loserWeaponLevel,
+      winRate: battleData.winRate,
+      winnerPointsEarned: battleData.winnerPointsEarned,
+      winnerGoldEarned: battleData.winnerGoldEarned,
+      loserGoldEarned: battleData.loserGoldEarned,
+      winnerStreak: battleData.winnerStreak,
+    });
+    record.winnerId = battleData.winnerId;
+    record.loserId = battleData.loserId;
+
     return await this.battleRecordRepository.save(record);
   }
 

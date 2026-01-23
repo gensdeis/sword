@@ -23,8 +23,6 @@ export class UserWeapon {
   @Column({ type: 'bigint', name: 'user_id' })
   userId: number;
 
-
-
   @Column({ type: 'int', name: 'weapon_template_id' })
   weaponTemplateId: number;
 

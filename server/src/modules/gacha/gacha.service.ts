@@ -217,12 +217,12 @@ export class GachaService {
 
     // Record gacha history
     const gachaHistory = this.gachaHistoryRepository.create({
-      userId,
       weaponTemplateId: session.weaponTemplateId,
       costGold: session.totalGoldSpent,
       rerollCount: session.rerollCount,
       wasKept: true,
     });
+    gachaHistory.userId = userId;
     await this.gachaHistoryRepository.save(gachaHistory);
 
     // Delete the session

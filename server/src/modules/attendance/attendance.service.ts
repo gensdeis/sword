@@ -36,10 +36,10 @@ export class AttendanceService {
 
     // Create attendance record
     const attendance = this.attendanceRepository.create({
-      userId,
       checkDate: today,
       rewardGold: GAME_CONFIG.ATTENDANCE.DAILY_GOLD,
     });
+    attendance.userId = userId;
 
     const savedAttendance = await this.attendanceRepository.save(attendance);
 

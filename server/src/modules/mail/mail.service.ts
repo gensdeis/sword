@@ -149,7 +149,6 @@ export class MailService {
     },
   ): Promise<Mail> {
     const mail = this.mailRepository.create({
-      userId,
       title: mailData.title,
       content: mailData.content,
       rewardType: mailData.rewardType,
@@ -158,6 +157,7 @@ export class MailService {
       rewardStones: mailData.rewardStones || 0,
       expiresAt: mailData.expiresAt || this.getDefaultExpireDate(),
     });
+    mail.userId = userId;
 
     return await this.mailRepository.save(mail);
   }
@@ -221,12 +221,12 @@ export class MailService {
     ) {
       // Create user weapon (not equipped)
       const userWeapon = this.userWeaponRepository.create({
-        userId,
         weaponTemplateId: mail.rewardWeaponTemplateId!,
         enhancementLevel: 0,
         isEquipped: false,
         isDestroyed: false,
       });
+      userWeapon.userId = userId;
       const savedWeapon: UserWeapon = await this.userWeaponRepository.save(userWeapon);
       weaponReceived = Number(savedWeapon.id);
     }
