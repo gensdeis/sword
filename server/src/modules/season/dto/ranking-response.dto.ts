@@ -24,6 +24,9 @@ export class UserRankingDto {
 
   @ApiProperty({ example: 15, description: 'Best win streak achieved' })
   bestStreak: number;
+
+  @ApiProperty({ example: 15, description: 'Maximum enhancement level achieved this season' })
+  maxEnhancementLevel: number;
 }
 
 export class RankingResponseDto {

@@ -37,6 +37,9 @@ export class SeasonRanking {
   @Column({ type: 'int', default: 0, name: 'best_streak' })
   bestStreak: number;
 
+  @Column({ type: 'int', default: 0, name: 'max_enhancement_level' })
+  maxEnhancementLevel: number;
+
   @UpdateDateColumn({ name: 'last_updated' })
   lastUpdated: Date;
 

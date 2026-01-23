@@ -130,6 +130,7 @@ export class SeasonService {
         loseCount: ranking.loseCount,
         currentStreak: ranking.currentStreak,
         bestStreak: ranking.bestStreak,
+        maxEnhancementLevel: ranking.maxEnhancementLevel,
       });
       rankingRecord.userId = ranking.userId;
       await this.rankingRepository.save(rankingRecord);
@@ -183,6 +184,7 @@ export class SeasonService {
   async getRankings(
     seasonId: number,
     limit: number = 100,
+    type: 'points' | 'enhancement' = 'points',
   ): Promise<
     Array<{
       userId: number;
@@ -192,9 +194,13 @@ export class SeasonService {
       loseCount: number;
       currentStreak: number;
       bestStreak: number;
+      maxEnhancementLevel: number;
     }>
   > {
-    const rankingKey = GAME_CONFIG.BATTLE.REDIS_KEYS.RANKING(seasonId);
+    const pointsRankingKey = GAME_CONFIG.BATTLE.REDIS_KEYS.RANKING(seasonId);
+    const enhancementRankingKey = `season:${seasonId}:enhancement_ranking`;
+    const rankingKey = type === 'enhancement' ? enhancementRankingKey : pointsRankingKey;
+
     const streakKey = `season:${seasonId}:streaks`;
     const statsKey = `season:${seasonId}:stats`;
 
@@ -207,24 +213,38 @@ export class SeasonService {
 
     const rankings = [];
 
-    for (const { value: userIdStr, score: totalPoints } of topUsers) {
+    for (const { value: userIdStr, score: rankingScore } of topUsers) {
       const userId = parseInt(userIdStr);
 
       // Get streak data
       const streakData = await this.redisService.hGet(streakKey, userIdStr);
       const currentStreak = streakData ? parseInt(streakData) : 0;
 
-      // Get stats (win/lose counts and best streak)
+      // Get stats (win/lose counts, best streak, and max enhancement level)
       const statsData = await this.redisService.hGet(statsKey, userIdStr);
       let winCount = 0;
       let loseCount = 0;
       let bestStreak = currentStreak;
+      let maxEnhancementLevel = 0;
 
       if (statsData) {
         const stats = JSON.parse(statsData);
         winCount = stats.winCount || 0;
         loseCount = stats.loseCount || 0;
         bestStreak = stats.bestStreak || currentStreak;
+        maxEnhancementLevel = stats.maxEnhancementLevel || 0;
+      }
+
+      // If we are looking for enhancement ranking, rankingScore IS maxEnhancementLevel
+      // If we are looking for points ranking, rankingScore IS totalPoints
+      const totalPointsValue = type === 'points' ? rankingScore : 0; // If enhancement rank, we might not have points easily here
+      
+      // If we're sorting by points, we need to make sure we get maxEnhancementLevel even if it's not the score
+      // If we're sorting by enhancement, we might want to get totalPoints if possible
+      let totalPoints = totalPointsValue;
+      if (type === 'enhancement') {
+        const pointsScore = await this.redisService.zScore(pointsRankingKey, userIdStr);
+        totalPoints = pointsScore || 0;
       }
 
       // Get username (simplified - in production, you'd query the User table)
@@ -238,6 +258,7 @@ export class SeasonService {
         loseCount,
         currentStreak,
         bestStreak,
+        maxEnhancementLevel,
       });
     }
 
@@ -293,6 +314,7 @@ export class SeasonService {
       winCount: 0,
       loseCount: 0,
       bestStreak: 0,
+      maxEnhancementLevel: 0,
     };
 
     if (statsData) {
@@ -324,6 +346,7 @@ export class SeasonService {
       winCount: 0,
       loseCount: 0,
       bestStreak: 0,
+      maxEnhancementLevel: 0,
     };
 
     if (statsData) {
@@ -341,5 +364,46 @@ export class SeasonService {
       userId.toString(),
       JSON.stringify(stats),
     );
+  }
+
+  /**
+   * Update maximum enhancement level achieved in the current season
+   */
+  async updateMaxEnhancementLevel(
+    userId: number,
+    seasonId: number,
+    level: number,
+  ): Promise<void> {
+    const statsKey = `season:${seasonId}:stats`;
+    const enhancementRankingKey = `season:${seasonId}:enhancement_ranking`;
+    
+    const statsData = await this.redisService.hGet(statsKey, userId.toString());
+
+    let stats = {
+      winCount: 0,
+      loseCount: 0,
+      bestStreak: 0,
+      maxEnhancementLevel: 0,
+    };
+
+    if (statsData) {
+      stats = JSON.parse(statsData);
+    }
+
+    if (level > stats.maxEnhancementLevel) {
+      stats.maxEnhancementLevel = level;
+      
+      // Update stats in Redis
+      await this.redisService.hSet(
+        statsKey,
+        userId.toString(),
+        JSON.stringify(stats),
+      );
+
+      // Update enhancement ranking in Redis
+      await this.redisService.zAdd(enhancementRankingKey, level, userId.toString());
+      
+      this.logger.log(`User ${userId} reached new max enhancement level ${level} in season ${seasonId}`);
+    }
   }
 }

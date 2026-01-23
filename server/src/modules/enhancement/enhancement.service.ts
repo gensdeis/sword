@@ -7,6 +7,7 @@ import { User } from '@/entities/user.entity';
 import { EnhancementHistory, EnhancementResult, PrayerEffect } from '@/entities/enhancement-history.entity';
 import { WeaponTemplate } from '@/entities/weapon-template.entity';
 import { PrayerService } from '@/modules/prayer/prayer.service';
+import { SeasonService } from '@/modules/season/season.service';
 import { GAME_CONFIG, getEnhancementRates } from '@/config/game-balance.config';
 
 interface EnhancementRates {
@@ -25,6 +26,7 @@ export class EnhancementService {
     @InjectRepository(EnhancementHistory)
     private enhancementHistoryRepository: Repository<EnhancementHistory>,
     private prayerService: PrayerService,
+    private seasonService: SeasonService,
   ) {}
 
   /**
@@ -104,6 +106,12 @@ export class EnhancementService {
 
       newLevel = weapon.enhancementLevel + levelIncrease;
       weapon.enhancementLevel = newLevel;
+
+      // Update season max enhancement level
+      const currentSeason = await this.seasonService.getCurrentSeason();
+      if (currentSeason) {
+        await this.seasonService.updateMaxEnhancementLevel(userId, currentSeason.id, newLevel);
+      }
 
       // Update template to the one for the new level
       if (weapon.weaponTemplate && weapon.weaponTemplate.baseWeaponId) {

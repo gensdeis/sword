@@ -1,4 +1,4 @@
-import { Controller, Get, Param, ParseIntPipe, UseGuards } from '@nestjs/common';
+import { Controller, Get, Param, ParseIntPipe, Query, UseGuards } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 import { SeasonService } from './season.service';
 import { SeasonResponseDto } from './dto/season-response.dto';
@@ -48,8 +48,9 @@ export class SeasonController {
   @ApiResponse({ status: 404, description: 'Season not found' })
   async getSeasonRankings(
     @Param('id', ParseIntPipe) seasonId: number,
+    @Query('type') type: 'points' | 'enhancement' = 'points',
   ): Promise<RankingResponseDto> {
-    const rankings = await this.seasonService.getRankings(seasonId, 100);
+    const rankings = await this.seasonService.getRankings(seasonId, 100, type);
 
     const userRankings: UserRankingDto[] = rankings.map((ranking, index) => ({
       rank: index + 1,
@@ -60,6 +61,7 @@ export class SeasonController {
       loseCount: ranking.loseCount,
       currentStreak: ranking.currentStreak,
       bestStreak: ranking.bestStreak,
+      maxEnhancementLevel: ranking.maxEnhancementLevel,
     }));
 
     return {

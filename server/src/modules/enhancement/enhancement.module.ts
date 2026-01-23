@@ -7,12 +7,14 @@ import { User } from '@/entities/user.entity';
 import { EnhancementHistory } from '@/entities/enhancement-history.entity';
 import { WeaponsModule } from '@/modules/weapons/weapons.module';
 import { PrayerModule } from '@/modules/prayer/prayer.module';
+import { SeasonModule } from '@/modules/season/season.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([UserWeapon, User, EnhancementHistory]),
     WeaponsModule,
     PrayerModule,
+    SeasonModule,
   ],
   providers: [EnhancementService],
   controllers: [EnhancementController],

@@ -31,17 +31,30 @@ interface RankingResponse {
     loseCount: number;
     currentStreak: number;
     bestStreak: number;
+    maxEnhancementLevel: number;
   }>;
   totalParticipants: number;
+}
+
+interface DisplayRankingEntry {
+  rank: number;
+  userId: number;
+  username: string;
+  totalPoints: number;
+  winCount: number;
+  loseCount: number;
+  bestStreak: number;
+  maxEnhancementLevel: number;
 }
 
 export default function RankingPage() {
   const router = useRouter();
   const { isAuthenticated, checkAuth, user } = useAuthStore();
   const [isLoading, setIsLoading] = useState(true);
-  const [rankings, setRankings] = useState<RankingEntry[]>([]);
+  const [rankingType, setRankingType] = useState<'points' | 'enhancement'>('points');
+  const [rankings, setRankings] = useState<DisplayRankingEntry[]>([]);
   const [season, setSeason] = useState<SeasonInfo | null>(null);
-  const [myRank, setMyRank] = useState<RankingEntry | null>(null);
+  const [myRank, setMyRank] = useState<DisplayRankingEntry | null>(null);
 
   useEffect(() => {
     const init = async () => {
@@ -49,14 +62,14 @@ export default function RankingPage() {
       if (!isAuthenticated) {
         router.push('/login');
       } else {
-        await fetchRankings();
+        await fetchRankings(rankingType);
       }
       setIsLoading(false);
     };
     init();
-  }, []);
+  }, [rankingType]);
 
-  const fetchRankings = async () => {
+  const fetchRankings = async (type: 'points' | 'enhancement') => {
     try {
       const seasonRes = await api.get<SeasonResponse | null>('/seasons/current');
 
@@ -76,14 +89,17 @@ export default function RankingPage() {
         isActive: currentSeason.status === 'active',
       });
 
-      const rankingsRes = await api.get<RankingResponse>(`/seasons/${currentSeason.id}/rankings`);
+      const rankingsRes = await api.get<RankingResponse>(`/seasons/${currentSeason.id}/rankings?type=${type}`);
 
-      const mappedRankings: RankingEntry[] = rankingsRes.data.rankings.map((r: any) => ({
+      const mappedRankings: DisplayRankingEntry[] = rankingsRes.data.rankings.map((r) => ({
         rank: r.rank,
         userId: r.userId,
         username: r.username,
-        totalVictories: r.winCount,
-        consecutiveVictories: r.bestStreak,
+        totalPoints: r.totalPoints,
+        winCount: r.winCount,
+        loseCount: r.loseCount,
+        bestStreak: r.bestStreak,
+        maxEnhancementLevel: r.maxEnhancementLevel,
       }));
 
       setRankings(mappedRankings);
@@ -148,12 +164,40 @@ export default function RankingPage() {
                 <div className="text-right">
                   <p className="text-3xl font-bold text-orange-600">{getRankIcon(myRank.rank)}</p>
                   <p className="text-sm text-gray-600">
-                    승리: {myRank.totalVictories}회 | 연승: {myRank.consecutiveVictories}회
+                    {rankingType === 'points' ? (
+                      <>포인트: {formatNumber(myRank.totalPoints)} | 연승: {formatNumber(myRank.bestStreak)}회</>
+                    ) : (
+                      <>최대 강화: +{myRank.maxEnhancementLevel} | 승리: {myRank.winCount}회</>
+                    )}
                   </p>
                 </div>
               </div>
             </Card>
           )}
+
+          {/* Ranking Tabs */}
+          <div className="flex mb-4 gap-2">
+            <button
+              onClick={() => setRankingType('points')}
+              className={`flex-1 py-3 px-4 rounded-lg font-bold transition-all ${
+                rankingType === 'points'
+                  ? 'bg-blue-600 text-white shadow-lg'
+                  : 'bg-white text-gray-600 hover:bg-gray-100'
+              }`}
+            >
+              전투 포인트 랭킹
+            </button>
+            <button
+              onClick={() => setRankingType('enhancement')}
+              className={`flex-1 py-3 px-4 rounded-lg font-bold transition-all ${
+                rankingType === 'enhancement'
+                  ? 'bg-blue-600 text-white shadow-lg'
+                  : 'bg-white text-gray-600 hover:bg-gray-100'
+              }`}
+            >
+              최대 강화 단계 랭킹
+            </button>
+          </div>
 
           {/* Rankings Table */}
           <Card>
@@ -164,8 +208,17 @@ export default function RankingPage() {
                   <tr className="border-b border-gray-200">
                     <th className="text-left py-3 px-4">순위</th>
                     <th className="text-left py-3 px-4">플레이어</th>
-                    <th className="text-right py-3 px-4">총 승리</th>
-                    <th className="text-right py-3 px-4">연승</th>
+                    {rankingType === 'points' ? (
+                      <>
+                        <th className="text-right py-3 px-4">전투 포인트</th>
+                        <th className="text-right py-3 px-4">최고 연승</th>
+                      </>
+                    ) : (
+                      <>
+                        <th className="text-right py-3 px-4">최대 강화 단계</th>
+                        <th className="text-right py-3 px-4">총 승리</th>
+                      </>
+                    )}
                   </tr>
                 </thead>
                 <tbody>
@@ -191,12 +244,25 @@ export default function RankingPage() {
                           </span>
                         )}
                       </td>
-                      <td className="py-3 px-4 text-right font-medium">
-                        {formatNumber(entry.totalVictories)}
-                      </td>
-                      <td className="py-3 px-4 text-right font-medium text-orange-600">
-                        {formatNumber(entry.consecutiveVictories)}
-                      </td>
+                      {rankingType === 'points' ? (
+                        <>
+                          <td className="py-3 px-4 text-right font-medium text-blue-600">
+                            {formatNumber(entry.totalPoints)}
+                          </td>
+                          <td className="py-3 px-4 text-right font-medium text-orange-600">
+                            {formatNumber(entry.bestStreak)}회
+                          </td>
+                        </>
+                      ) : (
+                        <>
+                          <td className="py-3 px-4 text-right font-bold text-purple-600">
+                            +{entry.maxEnhancementLevel}
+                          </td>
+                          <td className="py-3 px-4 text-right font-medium">
+                            {formatNumber(entry.winCount)}회
+                          </td>
+                        </>
+                      )}
                     </tr>
                   ))}
                 </tbody>
