@@ -17,7 +17,7 @@ import { BattleRecord } from './battle-record.entity';
 @Index('idx_user_active', ['userId', 'isDestroyed'])
 @Index('idx_user_equipped', ['userId', 'isEquipped'])
 export class UserWeapon {
-  @PrimaryGeneratedColumn('increment', { type: 'bigint' })
+  @PrimaryGeneratedColumn({ type: 'bigint' })
   id: number;
 
   @Column({ type: 'bigint', name: 'user_id', transformer: {

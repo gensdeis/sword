@@ -14,7 +14,7 @@ import { WeaponTemplate } from './weapon-template.entity';
 @Index('idx_user', ['userId'])
 @Index('idx_pull_date', ['pulledAt'])
 export class GachaHistory {
-  @PrimaryGeneratedColumn('increment', { type: 'bigint' })
+  @PrimaryGeneratedColumn({ type: 'bigint' })
   id: number;
 
   @Column({ type: 'bigint', name: 'user_id', transformer: {

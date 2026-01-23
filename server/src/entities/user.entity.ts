@@ -17,7 +17,7 @@ import { EnhancementHistory } from './enhancement-history.entity';
 
 @Entity('users')
 export class User {
-  @PrimaryGeneratedColumn('increment', { type: 'bigint', transformer: {
+  @PrimaryGeneratedColumn({ type: 'bigint', transformer: {
     to: (value: number) => value,
     from: (value: string) => parseInt(value, 10),
   } })

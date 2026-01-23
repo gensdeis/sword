@@ -27,7 +27,7 @@ export enum PrayerEffect {
 @Index('idx_user', ['userId'])
 @Index('idx_weapon', ['userWeaponId'])
 export class EnhancementHistory {
-  @PrimaryGeneratedColumn('increment', { type: 'bigint', transformer: {
+  @PrimaryGeneratedColumn({ type: 'bigint', transformer: {
     to: (value: number) => value,
     from: (value: string) => parseInt(value, 10),
   } })
