@@ -14,11 +14,16 @@ import { formatNumber } from '@/lib/utils';
 const ENTRY_FEE = 100;
 
 export default function BattleArena() {
-  const { gold, fetchProfile } = useUserStore();
+  const { user, fetchProfile } = useUserStore();
+  const gold = user?.gold ?? 0;
   const [isLoading, setIsLoading] = useState(false);
   const [opponent, setOpponent] = useState<Opponent | null>(null);
   const [battleResult, setBattleResult] = useState<BattleResult | null>(null);
   const [showResult, setShowResult] = useState(false);
+
+  useEffect(() => {
+    fetchProfile();
+  }, []);
 
   const handleEnterBattle = async () => {
     if (gold < ENTRY_FEE) {

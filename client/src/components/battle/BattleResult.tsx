@@ -63,7 +63,7 @@ export default function BattleResultModal({ isOpen, result, onClose }: BattleRes
           <div className="bg-yellow-50 border border-yellow-300 rounded-lg p-4 mb-6">
             <h4 className="font-bold text-gray-900 mb-2">보상</h4>
             <p className="text-xl font-bold text-yellow-600">
-              💰 {formatNumber(result.goldReward)} 골드
+              💰 {formatNumber(result.goldReward || 0)} 골드
             </p>
             <p className="text-sm text-gray-600 mt-1">
               연승 기록: {result.newStreak}회
