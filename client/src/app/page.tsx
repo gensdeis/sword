@@ -108,7 +108,7 @@ export default function HomePage() {
                   {equippedWeapon.name} +{equippedWeapon.enhancementLevel}
                 </p>
                 <p className="text-gray-600">
-                  공격력: {equippedWeapon.baseAttack + equippedWeapon.enhancementLevel * 10}
+                  공격력: {calculateTotalAttack(equippedWeapon.baseAttack, equippedWeapon.enhancementLevel)}
                 </p>
               </div>
             </Card>

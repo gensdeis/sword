@@ -25,7 +25,8 @@ export default function WeaponPullResult({
   isLoading,
   canReroll,
 }: WeaponPullResultProps) {
-  const totalAttack = calculateTotalAttack(weapon.baseAttack, weapon.enhancementLevel);
+  const enhancementLevel = weapon.enhancementLevel || 0;
+  const totalAttack = calculateTotalAttack(weapon.baseAttack, enhancementLevel);
 
   return (
     <div className="animate-fadeIn">
@@ -41,16 +42,16 @@ export default function WeaponPullResult({
 
         <h3 className={cn('text-2xl font-bold mb-2', getRarityColor(weapon.rarity))}>
           {weapon.name}
-          {weapon.enhancementLevel > 0 && (
-            <span className="ml-1">+{weapon.enhancementLevel}</span>
+          {enhancementLevel > 0 && (
+            <span className="ml-1">+{enhancementLevel}</span>
           )}
         </h3>
 
         <div className="text-center space-y-1 text-gray-700">
           <p className="text-lg">등급: <span className={cn('font-bold', getRarityColor(weapon.rarity))}>{getRarityLabel(weapon.rarity)}</span></p>
           <p>기본 공격력: {weapon.baseAttack}</p>
-          {weapon.enhancementLevel > 0 && (
-            <p className="text-blue-600">강화 공격력: +{weapon.enhancementLevel * 10}</p>
+          {enhancementLevel > 0 && (
+            <p className="text-blue-600">강화 공격력: +{enhancementLevel * 10}</p>
           )}
           <p className="text-xl font-bold">총 공격력: {totalAttack}</p>
         </div>
