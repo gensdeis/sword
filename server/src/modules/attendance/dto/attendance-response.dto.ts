@@ -15,7 +15,7 @@ export class AttendanceResponseDto {
 
   @ApiProperty({
     description: 'Success message',
-    example: '출석 완료! 200 골드를 받았습니다. (연속 5일)',
+    example: '출석 완료! 60000 골드를 받았습니다. (연속 5일)',
   })
   message: string;
 }

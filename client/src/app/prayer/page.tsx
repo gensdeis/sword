@@ -50,11 +50,11 @@ export default function PrayerPage() {
     setIsPraying(true);
     try {
       await api.post('/prayer/pray');
-      toast.success('±âµµ¸¦ ¿Ã·È½À´Ï´Ù. ±â¿îÀÌ ¼¼»ó¿¡ ÆÛÁý´Ï´Ù...');
+      toast.success('ê¸°ë„ì— ì„±ê³µí–ˆìŠµë‹ˆë‹¤. ê²°ê³¼ë¥¼ í™•ì¸í•˜ì„¸ìš”...');
       await fetchStats();
     } catch (error) {
       console.error('Prayer failed:', error);
-      toast.error('±âµµ¸¦ ¿Ã¸®´Â µ¥ ½ÇÆÐÇß½À´Ï´Ù.');
+      toast.error('ê¸°ë„ì— ì‹¤íŒ¨í–ˆìŠµë‹ˆë‹¤.');
     } finally {
       setIsPraying(false);
     }
@@ -73,28 +73,28 @@ export default function PrayerPage() {
       <Header />
       <main className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
-          <h1 className="text-4xl font-bold mb-8 text-center">±âµµÀÇ Á¦´Ü</h1>
+          <h1 className="text-4xl font-bold mb-8 text-center">ê¸°ë„ í’€ í˜„í™©</h1>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
             <Card className="flex flex-col justify-between">
               <div>
-                <h2 className="text-2xl font-bold mb-4">ÇöÀç ¼¼»óÀÇ ±â¿î</h2>
+                <h2 className="text-2xl font-bold mb-4">í˜„ìž¬ í’€ í˜„í™©</h2>
                 <p className="text-gray-600 mb-6">
-                  À¯ÀúµéÀÌ ¿Ã¸° ±âµµ°¡ ½×¿© Àü¿ª °­È­ È®·ü¿¡ ¿µÇâÀ» ÁÝ´Ï´Ù.
-                  °­È­ ½Ãµµ ½Ã Ç®¿¡¼­ ¹«ÀÛÀ§ ±â¿îÀÌ ÇÏ³ª ¼Ò¸ðµË´Ï´Ù.
+                  ê¸°ë„ì— ì„±ê³µí•˜ë©´ ê¸°ë„ í’€ì— ë²„í”„ í™•ë¥ ì´ ë°˜ì˜ë©ë‹ˆë‹¤.
+                  ê°•í™” ì‹œë„ ì¤‘ ë²„í”„ì˜ ì¢…ë¥˜ì™€ íš¨ê³¼ê°€ ê²°ì •ë©ë‹ˆë‹¤.
                 </p>
                 
                 <div className="space-y-4">
                   <div className="flex justify-between items-center p-3 bg-green-50 rounded-lg border border-green-200">
-                    <span className="font-medium text-green-700">Ãàº¹ÀÇ ±â¿î (Positive)</span>
+                    <span className="font-medium text-green-700">ê¸ì •ì  ë²„í”„ (Positive)</span>
                     <span className="text-xl font-bold text-green-600">{stats?.positiveBuffs ?? 0}</span>
                   </div>
                   <div className="flex justify-between items-center p-3 bg-red-50 rounded-lg border border-red-200">
-                    <span className="font-medium text-red-700">Àç¾ÓÀÇ ±â¿î (Negative)</span>
+                    <span className="font-medium text-red-700">ë¶€ì •ì  ë²„í”„ (Negative)</span>
                     <span className="text-xl font-bold text-red-600">{stats?.negativeBuffs ?? 0}</span>
                   </div>
                   <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg border border-gray-200">
-                    <span className="font-medium text-gray-700">Æò¿ÂÇÑ ±â¿î (Neutral)</span>
+                    <span className="font-medium text-gray-700">ì¤‘ë¦½ ë²„í”„ (Neutral)</span>
                     <span className="text-xl font-bold text-gray-600">{stats?.neutrals ?? 0}</span>
                   </div>
                 </div>
@@ -102,7 +102,7 @@ export default function PrayerPage() {
               
               <div className="mt-8 pt-4 border-t">
                 <div className="flex justify-between items-center">
-                  <span className="text-lg font-bold">ÃÑ ½×ÀÎ ±âµµ</span>
+                  <span className="text-lg font-bold">ì´ ëˆ„ì  ê¸°ë„</span>
                   <span className="text-2xl font-extrabold text-blue-600">{stats?.total ?? 0}</span>
                 </div>
               </div>
@@ -110,10 +110,10 @@ export default function PrayerPage() {
 
             <Card className="text-center flex flex-col items-center justify-center p-8">
               <span className="text-8xl mb-6">?</span>
-              <h2 className="text-2xl font-bold mb-4">±âµµ ¿Ã¸®±â</h2>
+              <h2 className="text-2xl font-bold mb-4">ê¸°ë„í•˜ê¸°</h2>
               <p className="text-gray-600 mb-8">
-                °£ÀýÇÑ ¸¶À½À¸·Î ±âµµ¸¦ ¿Ã·Áº¸¼¼¿ä.<br />
-                ¼¼»óÀÇ ±â¿îÀ» ¹Ù²Ù°í °­È­¸¦ µµ¿ï ¼ö ÀÖ½À´Ï´Ù.
+                ë‹¹ì‹ ì˜ ê²€ì„ ìœ„í•´ ê¸°ë„í•˜ì„¸ìš”.<br />
+                ê¸°ë„ë¥¼ í†µí•´ ìš´ëª…ì„ ë°”ê¾¸ê³  ê°•í™”ë¥¼ ì„±ê³µì‹œí‚¬ ìˆ˜ ìžˆìŠµë‹ˆë‹¤.
               </p>
               <Button
                 size="lg"
@@ -121,18 +121,18 @@ export default function PrayerPage() {
                 onClick={handlePray}
                 isLoading={isPraying}
               >
-                ±âµµÇÏ±â
+                ê¸°ë„í•˜ê¸°
               </Button>
             </Card>
           </div>
 
           <Card className="bg-blue-50 border-blue-200">
-            <h3 className="text-lg font-bold text-blue-800 mb-2">? ±âµµÀÇ È¿°ú</h3>
+            <h3 className="text-lg font-bold text-blue-800 mb-2">? ê¸°ë„ì˜ íš¨ê³¼</h3>
             <ul className="list-disc list-inside text-blue-700 space-y-1">
-              <li><strong>Ãàº¹ÀÇ ±â¿î</strong>: °­È­ ¼º°ø È®·üÀÌ Áõ°¡ÇÏ°í ÆÄ±« È®·üÀÌ °¨¼ÒÇÕ´Ï´Ù.</li>
-              <li><strong>Àç¾ÓÀÇ ±â¿î</strong>: °­È­ ¼º°ø È®·üÀÌ °¨¼ÒÇÏ°í ÆÄ±« È®·üÀÌ Áõ°¡ÇÕ´Ï´Ù.</li>
-              <li><strong>Æò¿ÂÇÑ ±â¿î</strong>: °­È­ È®·ü¿¡ ¿µÇâÀ» ÁÖÁö ¾Ê½À´Ï´Ù.</li>
-              <li>¸ðµç ±â¿îÀº °­È­ ½Ãµµ ½Ã Àü¿ª Ç®¿¡¼­ ¹«ÀÛÀ§·Î ÇÏ³ª°¡ ¼Ò¸ðµË´Ï´Ù.</li>
+              <li><strong>ê¸ì •ì  ë²„í”„</strong>: ê°•í™” ì„±ê³µ í™•ë¥ ì„ ì¦ê°€ì‹œí‚¤ê³  ì‹¤íŒ¨ í™•ë¥ ì„ ê°ì†Œì‹œí‚µë‹ˆë‹¤.</li>
+              <li><strong>ë¶€ì •ì  ë²„í”„</strong>: ê°•í™” ì„±ê³µ í™•ë¥ ì„ ê°ì†Œì‹œí‚¤ê³  ì‹¤íŒ¨ í™•ë¥ ì„ ì¦ê°€ì‹œí‚µë‹ˆë‹¤.</li>
+              <li><strong>ì¤‘ë¦½ ë²„í”„</strong>: ê°•í™” í™•ë¥ ì— ì˜í–¥ì„ ì£¼ì§€ ì•ŠìŠµë‹ˆë‹¤.</li>
+              <li>ëª¨ë“  ì¢…ë¥˜ì˜ ë²„í”„ëŠ” ê°•í™” ì‹œë„ ì‹œ ì†Œëª¨ë˜ë©°, í’€ì—ì„œ ì‚¬ë¼ì§‘ë‹ˆë‹¤.</li>
             </ul>
           </Card>
         </div>
