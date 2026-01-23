@@ -29,11 +29,13 @@ const EnhancementUI = () => {
 
     setIsEnhancing(true);
     try {
-      await enhanceWeapon(selectedWeapon.id);
-      // After enhancement, refetch weapons to get the latest state of all weapons
-      // This is especially important if a weapon was destroyed.
-      await fetchWeapons();
-      setSelectedWeapon(null); // Deselect weapon after attempt
+      const result = await enhanceWeapon(selectedWeapon.id);
+      
+      if (result && result.result !== 'destroyed' && result.weapon) {
+        setSelectedWeapon(result.weapon);
+      } else {
+        setSelectedWeapon(null);
+      }
     } finally {
       setIsEnhancing(false);
     }
@@ -62,7 +64,7 @@ const EnhancementUI = () => {
                 }`}
                 onClick={() => handleWeaponSelect(weapon)}
               >
-                <WeaponCard weapon={weapon} onEquip={() => {}} onSell={() => {}} />
+                <WeaponCard weapon={weapon} showActions={false} />
               </div>
             ))}
           </div>

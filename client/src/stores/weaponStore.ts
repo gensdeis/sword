@@ -11,7 +11,7 @@ interface WeaponState {
   fetchWeapons: (token?: string) => Promise<void>;
   equipWeapon: (weaponId: number) => Promise<void>;
   sellWeapon: (weaponId: number) => Promise<void>;
-  enhanceWeapon: (weaponId: number) => Promise<void>;
+  enhanceWeapon: (weaponId: number) => Promise<EnhanceResponseDto | undefined>;
   setSelectedWeapon: (weapon: Weapon | null) => void;
 }
 
@@ -67,7 +67,7 @@ export const useWeaponStore = create<WeaponState>((set, get) => ({
 
       // Refresh profile to update gold
       const { useUserStore } = await import('./userStore');
-      useUserStore.getState().fetchProfile();
+      await useUserStore.getState().fetchProfile();
     } catch (error) {
       console.error('Sell weapon failed:', error);
       toast.error('무기 판매에 실패했습니다.');
@@ -96,11 +96,14 @@ export const useWeaponStore = create<WeaponState>((set, get) => ({
 
       // Refresh profile to update gold and stones
       const { useUserStore } = await import('./userStore');
-      useUserStore.getState().fetchProfile();
+      await useUserStore.getState().fetchProfile();
+      
+      return response.data;
     } catch (error: any) {
       console.error('Enhance weapon failed:', error);
       const message = error.response?.data?.message || '강화에 실패했습니다.';
       toast.error(message);
+      return undefined;
     }
   },
 
