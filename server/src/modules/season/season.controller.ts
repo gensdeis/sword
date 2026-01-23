@@ -24,7 +24,7 @@ export class SeasonController {
     const season = await this.seasonService.getCurrentSeason();
 
     if (!season) {
-      throw new Error('No active season found');
+      return null;
     }
 
     return {

@@ -10,6 +10,31 @@ import Card from '@/components/common/Card';
 import Loading from '@/components/common/Loading';
 import { formatNumber } from '@/lib/utils';
 
+interface SeasonResponse {
+  id: number;
+  seasonNumber: number;
+  startAt: string;
+  endAt: string;
+  status: string;
+  rewardWeaponTemplateId: number | null;
+  isInSettlement: boolean;
+}
+
+interface RankingResponse {
+  seasonId: number;
+  rankings: Array<{
+    rank: number;
+    userId: number;
+    username: string;
+    totalPoints: number;
+    winCount: number;
+    loseCount: number;
+    currentStreak: number;
+    bestStreak: number;
+  }>;
+  totalParticipants: number;
+}
+
 export default function RankingPage() {
   const router = useRouter();
   const { isAuthenticated, checkAuth, user } = useAuthStore();
@@ -33,15 +58,40 @@ export default function RankingPage() {
 
   const fetchRankings = async () => {
     try {
-      const [rankingsRes, seasonRes, myRankRes] = await Promise.all([
-        api.get<RankingEntry[]>('/rankings/top?limit=100'),
-        api.get<SeasonInfo>('/rankings/season'),
-        api.get<RankingEntry>('/rankings/my-rank'),
-      ]);
+      const seasonRes = await api.get<SeasonResponse | null>('/seasons/current');
 
-      setRankings(rankingsRes.data);
-      setSeason(seasonRes.data);
-      setMyRank(myRankRes.data);
+      const currentSeason = seasonRes.data;
+      if (!currentSeason) {
+        setSeason(null);
+        setRankings([]);
+        setMyRank(null);
+        return;
+      }
+
+      setSeason({
+        id: currentSeason.id,
+        name: `시즌 ${currentSeason.seasonNumber}`,
+        startDate: currentSeason.startAt,
+        endDate: currentSeason.endAt,
+        isActive: currentSeason.status === 'active',
+      });
+
+      const rankingsRes = await api.get<RankingResponse>(`/seasons/${currentSeason.id}/rankings`);
+
+      const mappedRankings: RankingEntry[] = rankingsRes.data.rankings.map((r: any) => ({
+        rank: r.rank,
+        userId: r.userId,
+        username: r.username,
+        totalVictories: r.winCount,
+        consecutiveVictories: r.bestStreak,
+      }));
+
+      setRankings(mappedRankings);
+
+      const myRanking = mappedRankings.find((r) => r.userId === user?.id);
+      if (myRanking) {
+        setMyRank(myRanking);
+      }
     } catch (error) {
       console.error('Fetch rankings failed:', error);
     }
