@@ -31,7 +31,6 @@ export class MailService {
     expiresAt?: Date,
   ): Promise<Mail> {
     const mail = this.mailRepository.create({
-      userId,
       title,
       content,
       rewardType: MailRewardType.WEAPON,
@@ -40,6 +39,7 @@ export class MailService {
       rewardStones: 0,
       expiresAt: expiresAt || this.getDefaultExpireDate(),
     });
+    mail.userId = userId;
 
     return await this.mailRepository.save(mail);
   }
@@ -55,7 +55,6 @@ export class MailService {
     expiresAt?: Date,
   ): Promise<Mail> {
     const mail = this.mailRepository.create({
-      userId,
       title,
       content,
       rewardType: MailRewardType.GOLD,
@@ -63,6 +62,7 @@ export class MailService {
       rewardStones: 0,
       expiresAt: expiresAt || this.getDefaultExpireDate(),
     });
+    mail.userId = userId;
 
     return await this.mailRepository.save(mail);
   }
@@ -82,7 +82,6 @@ export class MailService {
     expiresAt?: Date,
   ): Promise<Mail> {
     const mail = this.mailRepository.create({
-      userId,
       title,
       content,
       rewardType: MailRewardType.MULTIPLE,
@@ -91,6 +90,7 @@ export class MailService {
       rewardStones: rewards.stones || 0,
       expiresAt: expiresAt || this.getDefaultExpireDate(),
     });
+    mail.userId = userId;
 
     return await this.mailRepository.save(mail);
   }
