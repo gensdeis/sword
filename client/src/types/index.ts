@@ -30,10 +30,10 @@ export interface AuthResponse {
 
 // Weapon types
 export enum WeaponRarity {
-  COMMON = 'COMMON',
-  RARE = 'RARE',
-  EPIC = 'EPIC',
-  LEGENDARY = 'LEGENDARY'
+  COMMON = 'common',
+  RARE = 'rare',
+  EPIC = 'epic',
+  LEGENDARY = 'legendary'
 }
 
 export interface Weapon {

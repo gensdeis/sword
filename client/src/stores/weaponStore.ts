@@ -55,17 +55,17 @@ export const useWeaponStore = create<WeaponState>((set, get) => ({
 
   sellWeapon: async (weaponId: number) => {
     try {
-      const response = await api.delete<{ goldEarned: number }>(`/weapons/${weaponId}`);
-      const { goldEarned } = response.data;
+      const response = await api.post<{ stonesEarned: number }>(`/weapons/${weaponId}/sell`);
+      const { stonesEarned } = response.data;
 
       // Remove weapon from local state
       set((state) => ({
         weapons: state.weapons.filter((weapon) => weapon.id !== weaponId),
       }));
 
-      toast.success(`무기를 판매하여 ${goldEarned} 골드를 획득했습니다.`);
+      toast.success(`무기를 판매하여 ${stonesEarned} 강화석을 획득했습니다.`);
 
-      // Refresh profile to update gold
+      // Refresh profile to update gold and stones
       const { useUserStore } = await import('./userStore');
       await useUserStore.getState().fetchProfile();
     } catch (error) {

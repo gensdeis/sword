@@ -35,9 +35,14 @@ export default function WeaponList() {
   if (sortBy === 'level') {
     filteredWeapons = [...filteredWeapons].sort((a, b) => b.enhancementLevel - a.enhancementLevel);
   } else if (sortBy === 'rarity') {
-    const rarityOrder = { LEGENDARY: 4, EPIC: 3, RARE: 2, COMMON: 1 };
+    const rarityOrder = {
+      [WeaponRarity.LEGENDARY]: 4,
+      [WeaponRarity.EPIC]: 3,
+      [WeaponRarity.RARE]: 2,
+      [WeaponRarity.COMMON]: 1,
+    };
     filteredWeapons = [...filteredWeapons].sort(
-      (a, b) => rarityOrder[b.rarity] - rarityOrder[a.rarity]
+      (a, b) => (rarityOrder[b.rarity] || 0) - (rarityOrder[a.rarity] || 0)
     );
   }
 
