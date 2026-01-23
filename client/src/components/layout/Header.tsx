@@ -58,6 +58,12 @@ export default function Header() {
             <Link href="/weapons" className="text-gray-700 hover:text-blue-600 transition-colors">
               내 무기
             </Link>
+            <Link href="/enhancement" className="text-gray-700 hover:text-blue-600 transition-colors">
+              강화
+            </Link>
+            <Link href="/prayer" className="text-gray-700 hover:text-blue-600 transition-colors">
+              기도
+            </Link>
             <Link href="/gacha" className="text-gray-700 hover:text-blue-600 transition-colors">
               뽑기
             </Link>
@@ -111,6 +117,12 @@ export default function Header() {
         <nav className="md:hidden mt-4 flex flex-wrap gap-3">
           <Link href="/weapons" className="text-sm text-gray-700 hover:text-blue-600 transition-colors">
             내 무기
+          </Link>
+          <Link href="/enhancement" className="text-sm text-gray-700 hover:text-blue-600 transition-colors">
+            강화
+          </Link>
+          <Link href="/prayer" className="text-sm text-gray-700 hover:text-blue-600 transition-colors">
+            기도
           </Link>
           <Link href="/gacha" className="text-sm text-gray-700 hover:text-blue-600 transition-colors">
             뽑기

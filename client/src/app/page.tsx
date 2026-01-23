@@ -115,7 +115,37 @@ export default function HomePage() {
           )}
 
           {/* Quick Actions */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
+            <Link href="/weapons">
+              <Card className="hover:shadow-lg transition-shadow cursor-pointer h-full">
+                <div className="text-center">
+                  <span className="text-5xl mb-2">🗡️</span>
+                  <h3 className="text-lg font-bold">내 무기</h3>
+                  <p className="text-sm text-gray-600">무기 관리</p>
+                </div>
+              </Card>
+            </Link>
+
+            <Link href="/enhancement">
+              <Card className="hover:shadow-lg transition-shadow cursor-pointer h-full">
+                <div className="text-center">
+                  <span className="text-5xl mb-2">🔨</span>
+                  <h3 className="text-lg font-bold">강화</h3>
+                  <p className="text-sm text-gray-600">무기 성능 향상</p>
+                </div>
+              </Card>
+            </Link>
+
+            <Link href="/prayer">
+              <Card className="hover:shadow-lg transition-shadow cursor-pointer h-full">
+                <div className="text-center">
+                  <span className="text-5xl mb-2">🙏</span>
+                  <h3 className="text-lg font-bold">기도</h3>
+                  <p className="text-sm text-gray-600">강화 확률 보정</p>
+                </div>
+              </Card>
+            </Link>
+
             <Link href="/gacha">
               <Card className="hover:shadow-lg transition-shadow cursor-pointer h-full">
                 <div className="text-center">
@@ -132,16 +162,6 @@ export default function HomePage() {
                   <span className="text-5xl mb-2">⚔️</span>
                   <h3 className="text-lg font-bold">전투</h3>
                   <p className="text-sm text-gray-600">다른 유저와 대결</p>
-                </div>
-              </Card>
-            </Link>
-
-            <Link href="/weapons">
-              <Card className="hover:shadow-lg transition-shadow cursor-pointer h-full">
-                <div className="text-center">
-                  <span className="text-5xl mb-2">🗡️</span>
-                  <h3 className="text-lg font-bold">내 무기</h3>
-                  <p className="text-sm text-gray-600">무기 관리</p>
                 </div>
               </Card>
             </Link>
