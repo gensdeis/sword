@@ -35,7 +35,7 @@ export class WeaponsController {
     type: [WeaponResponseDto],
   })
   async getMyWeapons(@Request() req): Promise<WeaponResponseDto[]> {
-    return this.weaponsService.getMyWeapons(req.user.id);
+    return this.weaponsService.getMyWeapons(req.user.userId);
   }
 
   @Get('templates')
@@ -64,7 +64,7 @@ export class WeaponsController {
     @Param('id', ParseIntPipe) id: number,
     @Request() req,
   ): Promise<WeaponResponseDto> {
-    return this.weaponsService.getWeaponById(id, req.user.id);
+    return this.weaponsService.getWeaponById(id, req.user.userId);
   }
 
   @Post(':id/equip')
@@ -83,7 +83,7 @@ export class WeaponsController {
     @Param('id', ParseIntPipe) id: number,
     @Request() req,
   ): Promise<WeaponResponseDto> {
-    return this.weaponsService.equipWeapon(id, req.user.id);
+    return this.weaponsService.equipWeapon(id, req.user.userId);
   }
 
   @Post(':id/sell')
@@ -102,6 +102,6 @@ export class WeaponsController {
     @Param('id', ParseIntPipe) id: number,
     @Request() req,
   ): Promise<SellResponseDto> {
-    return this.weaponsService.sellWeapon(id, req.user.id);
+    return this.weaponsService.sellWeapon(id, req.user.userId);
   }
 }

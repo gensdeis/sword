@@ -12,7 +12,10 @@ import { User } from './user.entity';
 @Entity('attendance_records')
 @Index('idx_user_date', ['userId', 'checkDate'])
 export class AttendanceRecord {
-  @PrimaryColumn({ type: 'bigint', name: 'user_id' })
+  @PrimaryColumn({ type: 'bigint', name: 'user_id', transformer: {
+    to: (value: number) => value,
+    from: (value: string) => parseInt(value, 10),
+  } })
   userId: number;
 
   @PrimaryColumn({ type: 'date', name: 'check_date' })

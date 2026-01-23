@@ -16,7 +16,10 @@ export class SeasonRanking {
   @PrimaryColumn({ type: 'int', name: 'season_id' })
   seasonId: number;
 
-  @PrimaryColumn({ type: 'bigint', name: 'user_id' })
+  @PrimaryColumn({ type: 'bigint', name: 'user_id', transformer: {
+    to: (value: number) => value,
+    from: (value: string) => parseInt(value, 10),
+  } })
   userId: number;
 
   @Column({ type: 'int', default: 0, name: 'total_points' })

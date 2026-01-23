@@ -59,7 +59,7 @@ export class EnhancementController {
     @Param('id', ParseIntPipe) weaponId: number,
     @Request() req: any,
   ): Promise<EnhanceResponseDto> {
-    const userId = req.user.id;
+    const userId = req.user.userId;
 
     const result = await this.enhancementService.enhanceWeapon(userId, weaponId);
 
@@ -96,7 +96,7 @@ export class EnhancementController {
     @Request() req: any,
     @Query('limit') limit?: number,
   ): Promise<EnhancementHistoryResponseDto> {
-    const userId = req.user.id;
+    const userId = req.user.userId;
 
     const result = await this.enhancementService.getEnhancementHistory(
       userId,

@@ -16,6 +16,7 @@ import {
 import { PrayerService } from './prayer.service';
 import { PrayerResponseDto } from './dto/prayer-response.dto';
 import { PrayerPoolStatsDto } from './dto/prayer-pool-stats.dto';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 @ApiTags('Prayer')
 @Controller('prayer')
@@ -24,7 +25,7 @@ export class PrayerController {
 
   @Post('pray')
   @HttpCode(HttpStatus.OK)
-  // @UseGuards(JwtAuthGuard) // Uncomment when auth is ready
+  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({
     summary: 'Perform a prayer',
@@ -36,15 +37,13 @@ export class PrayerController {
     type: PrayerResponseDto,
   })
   async pray(@Request() req: any): Promise<PrayerResponseDto> {
-    // TODO: Get userId from authenticated request
-    // const userId = req.user.id;
-    const userId = 1; // Temporary placeholder
+    const userId = req.user.userId;
 
     return await this.prayerService.pray(userId);
   }
 
   @Get('pool')
-  // @UseGuards(JwtAuthGuard) // Uncomment when auth is ready
+  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({
     summary: 'Get prayer pool statistics',

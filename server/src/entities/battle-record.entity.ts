@@ -16,22 +16,37 @@ import { UserWeapon } from './user-weapon.entity';
 @Index('idx_season_loser', ['seasonId', 'loserId'])
 @Index('idx_battle_date', ['battleAt'])
 export class BattleRecord {
-  @PrimaryGeneratedColumn('increment', { type: 'bigint' })
+  @PrimaryGeneratedColumn('increment', { type: 'bigint', transformer: {
+    to: (value: number) => value,
+    from: (value: string) => parseInt(value, 10),
+  } })
   id: number;
 
   @Column({ type: 'int', name: 'season_id' })
   seasonId: number;
 
-  @Column({ type: 'bigint', name: 'winner_id' })
+  @Column({ type: 'bigint', name: 'winner_id', transformer: {
+    to: (value: number) => value,
+    from: (value: string) => parseInt(value, 10),
+  } })
   winnerId: number;
 
-  @Column({ type: 'bigint', name: 'loser_id' })
+  @Column({ type: 'bigint', name: 'loser_id', transformer: {
+    to: (value: number) => value,
+    from: (value: string) => parseInt(value, 10),
+  } })
   loserId: number;
 
-  @Column({ type: 'bigint', name: 'winner_weapon_id' })
+  @Column({ type: 'bigint', name: 'winner_weapon_id', transformer: {
+    to: (value: number) => value,
+    from: (value: string) => parseInt(value, 10),
+  } })
   winnerWeaponId: number;
 
-  @Column({ type: 'bigint', name: 'loser_weapon_id' })
+  @Column({ type: 'bigint', name: 'loser_weapon_id', transformer: {
+    to: (value: number) => value,
+    from: (value: string) => parseInt(value, 10),
+  } })
   loserWeaponId: number;
 
   @Column({ type: 'int', name: 'winner_weapon_level' })
