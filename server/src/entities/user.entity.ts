@@ -38,6 +38,9 @@ export class User {
   @Column({ type: 'varchar', length: 64, name: 'seed_salt' })
   seedSalt: string;
 
+  @Column({ type: 'int', default: 0, name: 'daily_prayer_count' })
+  dailyPrayerCount: number;
+
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 

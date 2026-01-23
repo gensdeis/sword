@@ -130,7 +130,7 @@ export default function PrayerPage() {
               </p>
               <div className="mb-6 p-3 bg-yellow-50 rounded-lg border border-yellow-200 w-full">
                 <p className="text-sm text-yellow-800">
-                  금일 기도 횟수: <span className="font-bold">{stats?.myTodayPrayerCount ?? 0}</span>회
+                  누적 기도 횟수: <span className="font-bold">{stats?.myTodayPrayerCount ?? 0}</span>회
                 </p>
                 <p className="text-lg font-bold text-yellow-600">
                   비용: {formatNumber(nextPrayerCost)} 골드

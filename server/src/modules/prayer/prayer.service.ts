@@ -36,14 +36,7 @@ export class PrayerService implements OnModuleInit {
     const startOfDay = new Date();
     startOfDay.setHours(0, 0, 0, 0);
 
-    const prayerCountToday = await this.prayerHistoryRepository.count({
-      where: {
-        userId,
-        prayedAt: MoreThanOrEqual(startOfDay),
-      },
-    });
-
-    const prayerCost = (prayerCountToday + 1) * 500;
+    const prayerCost = (user.dailyPrayerCount + 1) * 500;
 
     if (user.gold < prayerCost) {
       throw new Error(`골드가 부족합니다. (필요 골드: ${prayerCost})`);
@@ -51,6 +44,7 @@ export class PrayerService implements OnModuleInit {
 
     // Deduct gold
     user.gold -= prayerCost;
+    user.dailyPrayerCount += 1;
     await this.userRepository.save(user);
 
     // Generate random prayer result
@@ -77,10 +71,12 @@ export class PrayerService implements OnModuleInit {
   }
 
   /**
-   * Reset global prayer pool
+   * Reset global prayer pool and all users' prayer counts
    */
   async resetPrayerPool(): Promise<void> {
     await this.redisService.resetPrayerPool();
+    // Reset all users' daily prayer counts
+    await this.userRepository.update({}, { dailyPrayerCount: 0 });
   }
 
   /**
@@ -106,15 +102,8 @@ export class PrayerService implements OnModuleInit {
     let myTodayPrayerCount = undefined;
 
     if (userId) {
-      const startOfDay = new Date();
-      startOfDay.setHours(0, 0, 0, 0);
-
-      myTodayPrayerCount = await this.prayerHistoryRepository.count({
-        where: {
-          userId,
-          prayedAt: MoreThanOrEqual(startOfDay),
-        },
-      });
+      const user = await this.userRepository.findOne({ where: { id: userId } });
+      myTodayPrayerCount = user?.dailyPrayerCount ?? 0;
     }
 
     return {
