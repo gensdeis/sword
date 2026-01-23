@@ -20,8 +20,8 @@ import { MailResponseDto } from './dto/mail-response.dto';
 import { ClaimResponseDto } from './dto/claim-response.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
-@ApiTags('mails')
-@Controller('mails')
+@ApiTags('mail')
+@Controller('mail')
 @UseGuards(JwtAuthGuard)
 @ApiBearerAuth()
 export class MailController {
