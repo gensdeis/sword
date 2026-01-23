@@ -36,8 +36,12 @@ CREATE TABLE IF NOT EXISTS `weapon_templates` (
   `sell_price_per_level` INT NOT NULL COMMENT 'Additional stones per enhancement level',
   `description` TEXT,
   `image_url` VARCHAR(255),
+  `base_weapon_id` INT NULL,
+  `level` INT DEFAULT 0,
+  `is_hidden` BOOLEAN DEFAULT FALSE,
   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  INDEX `idx_rarity` (`rarity`)
+  INDEX `idx_rarity` (`rarity`),
+  INDEX `idx_base_weapon` (`base_weapon_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ============================================
