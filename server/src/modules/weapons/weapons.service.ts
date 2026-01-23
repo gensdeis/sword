@@ -242,7 +242,7 @@ export class WeaponsService {
   /**
    * Map UserWeapon to WeaponResponseDto
    */
-  private mapToResponseDto(weapon: UserWeapon): WeaponResponseDto {
+  public mapToResponseDto(weapon: UserWeapon): WeaponResponseDto {
     const template = weapon.weaponTemplate;
     const currentAttack = template.baseAttack + weapon.enhancementLevel * 10;
 

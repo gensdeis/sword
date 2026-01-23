@@ -19,6 +19,7 @@ import {
   ApiQuery,
 } from '@nestjs/swagger';
 import { EnhancementService } from './enhancement.service';
+import { WeaponsService } from '../weapons/weapons.service';
 import { EnhanceResponseDto } from './dto/enhance-response.dto';
 import { EnhancementHistoryResponseDto } from './dto/enhancement-history-response.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -26,7 +27,10 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 @ApiTags('Enhancement')
 @Controller()
 export class EnhancementController {
-  constructor(private readonly enhancementService: EnhancementService) {}
+  constructor(
+    private readonly enhancementService: EnhancementService,
+    private readonly weaponsService: WeaponsService,
+  ) {}
 
   @Post('weapons/:id/enhance')
   @HttpCode(HttpStatus.OK)
@@ -67,10 +71,12 @@ export class EnhancementController {
       result: result.result,
       newLevel: result.newLevel,
       levelIncrease: result.levelIncrease,
-      weapon: result.weapon,
+      weapon: result.weapon ? this.weaponsService.mapToResponseDto(result.weapon) : null,
       successRate: result.successRate,
       destructionRate: result.destructionRate,
       prayerEffect: result.prayerEffect,
+      positiveBuffs: result.positiveBuffs,
+      negativeBuffs: result.negativeBuffs,
     };
   }
 
