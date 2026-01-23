@@ -1,4 +1,4 @@
-'use client';
+ï»¿'use client';
 
 import React, { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
@@ -37,10 +37,11 @@ export default function EnhancementPage() {
       <Header />
       <main className="container mx-auto px-4 py-8">
         <div className="max-w-6xl mx-auto">
-          <h1 className="text-4xl font-bold mb-8 text-center">¹«±â °­È­</h1>
+          <h1 className="text-4xl font-bold mb-8 text-center">ë¬´ê¸° ê°•í™”</h1>
           <EnhancementUI />
         </div>
       </main>
     </div>
   );
 }
+
