@@ -27,7 +27,7 @@ export default function WeaponCard({ weapon, onEquip, onSell, showActions = true
       {/* Weapon Image */}
       <div className="flex items-center justify-center h-32 mb-4 bg-white rounded-lg">
         {weapon.imageUrl ? (
-          <img src={weapon.imageUrl} alt={weapon.name} className="h-full object-contain" />
+          <img src={weapon.imageUrl} alt={weapon.weaponName} className="h-full object-contain" />
         ) : (
           <span className="text-6xl">⚔️</span>
         )}
@@ -36,7 +36,7 @@ export default function WeaponCard({ weapon, onEquip, onSell, showActions = true
       {/* Weapon Info */}
       <div className="space-y-2">
         <h3 className={cn('text-lg font-bold', getRarityColor(weapon.rarity))}>
-          {weapon.name}
+          {weapon.weaponName}
           {weapon.enhancementLevel > 0 && (
             <span className="ml-1 text-sm">+{weapon.enhancementLevel}</span>
           )}

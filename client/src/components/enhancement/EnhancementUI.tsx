@@ -74,10 +74,10 @@ const EnhancementUI = () => {
         <Card>
           {selectedWeapon ? (
             <div>
-              <h3 className="text-lg font-bold mb-2">{selectedWeapon.name}</h3>
+              <h3 className="text-lg font-bold mb-2">{selectedWeapon.weaponName}</h3>
               <p>등급: {selectedWeapon.rarity}</p>
               <p>현재 레벨: +{selectedWeapon.enhancementLevel}</p>
-              <p>공격력: {selectedWeapon.baseAttack} (+{selectedWeapon.enhancedAttack - selectedWeapon.baseAttack})</p>
+              <p>공격력: {selectedWeapon.baseAttack} (+{selectedWeapon.currentAttack - selectedWeapon.baseAttack})</p>
               <p className="mt-4 text-sm text-gray-600">
                 강화 시도 시 일정 확률로 강화 레벨이 상승하거나, 실패할 경우 레벨이 하락하거나 무기가 파괴될 수 있습니다.
               </p>

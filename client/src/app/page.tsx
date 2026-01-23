@@ -105,7 +105,7 @@ export default function HomePage() {
               <div className="text-center">
                 <span className="text-6xl mb-2">⚔️</span>
                 <p className="text-2xl font-bold text-blue-600">
-                  {equippedWeapon.name} +{equippedWeapon.enhancementLevel}
+                  {equippedWeapon.weaponName} +{equippedWeapon.enhancementLevel}
                 </p>
                 <p className="text-gray-600">
                   공격력: {calculateTotalAttack(equippedWeapon.baseAttack, equippedWeapon.enhancementLevel)}

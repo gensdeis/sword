@@ -37,7 +37,7 @@ export default function BattleResultModal({ isOpen, result, onClose }: BattleRes
             <h4 className="font-bold text-gray-900 mb-2">나</h4>
             <p className="text-sm text-gray-600">{result.attacker.username}</p>
             <p className="text-sm text-gray-600">
-              무기: {result.attacker.weapon.name} +{result.attacker.weapon.enhancementLevel}
+              무기: {result.attacker.weapon.weaponName} +{result.attacker.weapon.enhancementLevel}
             </p>
             <p className="text-lg font-bold text-blue-600 mt-1">
               전투력: {result.attacker.calculatedPower}
@@ -50,7 +50,7 @@ export default function BattleResultModal({ isOpen, result, onClose }: BattleRes
             <h4 className="font-bold text-gray-900 mb-2">상대</h4>
             <p className="text-sm text-gray-600">{result.defender.username}</p>
             <p className="text-sm text-gray-600">
-              무기: {result.defender.weapon.name} +{result.defender.weapon.enhancementLevel}
+              무기: {result.defender.weapon.weaponName} +{result.defender.weapon.enhancementLevel}
             </p>
             <p className="text-lg font-bold text-red-600 mt-1">
               전투력: {result.defender.calculatedPower}

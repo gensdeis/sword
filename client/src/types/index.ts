@@ -39,15 +39,19 @@ export enum WeaponRarity {
 export interface Weapon {
   id: number;
   userId: number;
-  name: string;
+  weaponTemplateId: number;
+  weaponName: string;
   rarity: WeaponRarity;
   baseAttack: number;
   enhancementLevel: number;
-  enhancedAttack: number;
+  currentAttack: number;
   isEquipped: boolean;
+  isDestroyed: boolean;
+  acquiredAt: string;
   imageUrl?: string;
-  createdAt: string;
-  updatedAt: string;
+  canDoubleEnhance: boolean;
+  doubleEnhanceRate: number;
+  description: string;
 }
 
 export interface WeaponPullResult {
