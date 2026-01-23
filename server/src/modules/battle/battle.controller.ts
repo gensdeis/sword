@@ -182,6 +182,7 @@ export class BattleController {
       loseCount: ranking.loseCount,
       currentStreak: ranking.currentStreak,
       bestStreak: ranking.bestStreak,
+      maxEnhancementLevel: ranking.maxEnhancementLevel,
     }));
 
     return {
