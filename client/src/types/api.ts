@@ -8,4 +8,6 @@ export interface EnhanceResponseDto {
   successRate: number;
   destructionRate: number;
   prayerEffect: 'positive' | 'negative' | 'neutral' | 'none';
+  positiveBuffs: number;
+  negativeBuffs: number;
 }

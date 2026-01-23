@@ -46,4 +46,10 @@ export class EnhanceResponseDto {
     example: 'positive',
   })
   prayerEffect: 'positive' | 'negative' | 'neutral' | 'none';
+
+  @ApiProperty({ description: 'Number of positive buffs applied', example: 5 })
+  positiveBuffs: number;
+
+  @ApiProperty({ description: 'Number of negative buffs applied', example: 2 })
+  negativeBuffs: number;
 }

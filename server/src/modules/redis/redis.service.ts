@@ -212,6 +212,14 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
     }
   }
 
+  async resetPrayerPool(): Promise<void> {
+    const poolKey = 'global:prayer:pool';
+    await this.hSet(poolKey, 'positiveBuffs', '0');
+    await this.hSet(poolKey, 'negativeBuffs', '0');
+    await this.hSet(poolKey, 'neutrals', '0');
+    console.log('🔄 Prayer pool reset');
+  }
+
   async getPrayerPoolStats(): Promise<{
     positiveBuffs: number;
     negativeBuffs: number;

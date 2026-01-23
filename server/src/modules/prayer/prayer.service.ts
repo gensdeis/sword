@@ -1,8 +1,9 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, MoreThanOrEqual } from 'typeorm';
 import { RedisService } from '@/modules/redis/redis.service';
 import { PrayerHistory, PrayerResult } from '@/entities/prayer-history.entity';
+import { User } from '@/entities/user.entity';
 import { GAME_CONFIG } from '@/config/game-balance.config';
 
 @Injectable()
@@ -10,6 +11,8 @@ export class PrayerService implements OnModuleInit {
   constructor(
     @InjectRepository(PrayerHistory)
     private prayerHistoryRepository: Repository<PrayerHistory>,
+    @InjectRepository(User)
+    private userRepository: Repository<User>,
     private redisService: RedisService,
   ) {}
 
@@ -22,6 +25,34 @@ export class PrayerService implements OnModuleInit {
    * Generates random result and adds to global pool
    */
   async pray(userId: number): Promise<{ message: string; globalPoolSize: number }> {
+    // Get user for gold check and prayer count
+    const user = await this.userRepository.findOne({ where: { id: userId } });
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    // Calculate prayer cost: (today's prayer count + 1) * 500
+    // We need to count how many times the user prayed today
+    const startOfDay = new Date();
+    startOfDay.setHours(0, 0, 0, 0);
+
+    const prayerCountToday = await this.prayerHistoryRepository.count({
+      where: {
+        userId,
+        prayedAt: MoreThanOrEqual(startOfDay),
+      },
+    });
+
+    const prayerCost = (prayerCountToday + 1) * 500;
+
+    if (user.gold < prayerCost) {
+      throw new Error(`골드가 부족합니다. (필요 골드: ${prayerCost})`);
+    }
+
+    // Deduct gold
+    user.gold -= prayerCost;
+    await this.userRepository.save(user);
+
     // Generate random prayer result
     const result = this.generatePrayerResult();
 
@@ -40,9 +71,16 @@ export class PrayerService implements OnModuleInit {
     const stats = await this.getPrayerPoolStats();
 
     return {
-      message: '기도를 올렸습니다...',
+      message: `기도를 올렸습니다... (${prayerCost} 골드 소모)`,
       globalPoolSize: stats.total,
     };
+  }
+
+  /**
+   * Reset global prayer pool
+   */
+  async resetPrayerPool(): Promise<void> {
+    await this.redisService.resetPrayerPool();
   }
 
   /**
@@ -57,13 +95,32 @@ export class PrayerService implements OnModuleInit {
   /**
    * Get current prayer pool statistics
    */
-  async getPrayerPoolStats(): Promise<{
+  async getPrayerPoolStats(userId?: number): Promise<{
     positiveBuffs: number;
     negativeBuffs: number;
     neutrals: number;
     total: number;
+    myTodayPrayerCount?: number;
   }> {
-    return await this.redisService.getPrayerPoolStats();
+    const stats = await this.redisService.getPrayerPoolStats();
+    let myTodayPrayerCount = undefined;
+
+    if (userId) {
+      const startOfDay = new Date();
+      startOfDay.setHours(0, 0, 0, 0);
+
+      myTodayPrayerCount = await this.prayerHistoryRepository.count({
+        where: {
+          userId,
+          prayedAt: MoreThanOrEqual(startOfDay),
+        },
+      });
+    }
+
+    return {
+      ...stats,
+      myTodayPrayerCount,
+    };
   }
 
   /**

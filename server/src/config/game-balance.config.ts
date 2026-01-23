@@ -68,8 +68,8 @@ export const GAME_CONFIG = {
     },
 
     EFFECTS: {
-      SUCCESS_BONUS: 5, // +5%p to success rate
-      DESTRUCTION_PENALTY: 3, // +3%p to destruction rate
+      SUCCESS_PER_BUFF: 1, // +1%p to success rate per positive buff
+      DESTRUCTION_PER_BUFF: 0.5, // +0.5%p to destruction rate per negative buff
     },
 
     POOL_LIMITS: {

@@ -68,6 +68,12 @@ export class EnhancementHistory {
   })
   prayerEffect: PrayerEffect;
 
+  @Column({ type: 'int', default: 0, name: 'positive_buffs' })
+  positiveBuffs: number;
+
+  @Column({ type: 'int', default: 0, name: 'negative_buffs' })
+  negativeBuffs: number;
+
   @CreateDateColumn({ name: 'enhanced_at' })
   enhancedAt: Date;
 

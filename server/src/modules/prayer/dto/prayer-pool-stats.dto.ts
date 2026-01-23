@@ -24,4 +24,11 @@ export class PrayerPoolStatsDto {
     example: 47,
   })
   total: number;
+
+  @ApiProperty({
+    description: 'Number of times the current user prayed today',
+    example: 3,
+    required: false,
+  })
+  myTodayPrayerCount?: number;
 }

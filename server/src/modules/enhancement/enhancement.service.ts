@@ -42,6 +42,8 @@ export class EnhancementService {
     successRate: number;
     destructionRate: number;
     prayerEffect: PrayerEffect;
+    positiveBuffs: number;
+    negativeBuffs: number;
   }> {
     // Get weapon with relations
     const weapon = await this.userWeaponRepository.findOne({
@@ -67,14 +69,25 @@ export class EnhancementService {
       throw new NotFoundException('User not found');
     }
 
-    // Consume prayer effect from global pool
-    const prayerEffect = await this.prayerService.consumePrayerEffect();
-
     // Calculate enhancement rates with prayer effect
-    const rates = this.calculateEnhancementRates(weapon.enhancementLevel, prayerEffect);
+    const prayerStats = await this.prayerService.getPrayerPoolStats();
+    const { positiveBuffs, negativeBuffs } = prayerStats;
+    
+    // Reset prayer pool after consumption to prevent accumulation (all buffs applied at once)
+    await this.prayerService.resetPrayerPool();
+
+    // Calculate enhancement rates with prayer effect applied
+    const rates = this.calculateEnhancementRates(weapon.enhancementLevel, positiveBuffs, negativeBuffs);
 
     // Perform enhancement with seeded random
     const result = await this.performEnhancement(weapon, rates, user);
+
+    // Determine simplified prayer effect for history (none if no buffs, or based on majority if desired)
+    // For legacy support, let's say it's positive if positiveBuffs > negativeBuffs, etc.
+    let prayerEffect: PrayerEffect = PrayerEffect.NONE;
+    if (positiveBuffs > negativeBuffs) prayerEffect = PrayerEffect.POSITIVE;
+    else if (negativeBuffs > positiveBuffs) prayerEffect = PrayerEffect.NEGATIVE;
+    else if (positiveBuffs > 0) prayerEffect = PrayerEffect.NEUTRAL;
 
     // Check for double enhancement (legendary weapons only)
     let levelIncrease = 0;
@@ -116,6 +129,8 @@ export class EnhancementService {
       result,
       rates,
       prayerEffect,
+      positiveBuffs,
+      negativeBuffs,
       weapon.enhancementLevel - levelIncrease, // from level
       newLevel, // to level
     );
@@ -127,7 +142,9 @@ export class EnhancementService {
       weapon: result !== EnhancementResult.DESTROYED ? weapon : null,
       successRate: rates.success,
       destructionRate: rates.destruction,
-      prayerEffect: prayerEffect === 'none' ? PrayerEffect.NONE : prayerEffect === 'positive' ? PrayerEffect.POSITIVE : prayerEffect === 'negative' ? PrayerEffect.NEGATIVE : PrayerEffect.NEUTRAL,
+      prayerEffect: prayerEffect,
+      positiveBuffs,
+      negativeBuffs,
     };
   }
 
@@ -136,21 +153,16 @@ export class EnhancementService {
    */
   private calculateEnhancementRates(
     level: number,
-    prayerEffect: 'positive' | 'negative' | 'neutral' | 'none',
+    positiveBuffs: number,
+    negativeBuffs: number,
   ): EnhancementRates {
     // Get base rates
     const baseRates = getEnhancementRates(level);
     let { success, maintain, destruction } = baseRates;
 
-    // Apply prayer effects
-    if (prayerEffect === 'positive') {
-      // +5%p success rate
-      success += GAME_CONFIG.PRAYER.EFFECTS.SUCCESS_BONUS;
-    } else if (prayerEffect === 'negative') {
-      // +3%p destruction rate
-      destruction += GAME_CONFIG.PRAYER.EFFECTS.DESTRUCTION_PENALTY;
-    }
-    // neutral and none have no effect
+    // Apply prayer effects: +1%p success per positive, +0.5%p destruction per negative
+    success += positiveBuffs * GAME_CONFIG.PRAYER.EFFECTS.SUCCESS_PER_BUFF;
+    destruction += negativeBuffs * GAME_CONFIG.PRAYER.EFFECTS.DESTRUCTION_PER_BUFF;
 
     // Apply min/max constraints
     success = Math.max(
@@ -255,7 +267,9 @@ export class EnhancementService {
     userId: number,
     result: EnhancementResult,
     rates: EnhancementRates,
-    prayerEffect: 'positive' | 'negative' | 'neutral' | 'none',
+    prayerEffect: PrayerEffect,
+    positiveBuffs: number,
+    negativeBuffs: number,
     fromLevel: number,
     toLevel: number | null,
   ): Promise<void> {
@@ -266,7 +280,9 @@ export class EnhancementService {
       result,
       successRate: rates.success,
       destructionRate: rates.destruction,
-      prayerEffect: prayerEffect === 'none' ? PrayerEffect.NONE : prayerEffect === 'positive' ? PrayerEffect.POSITIVE : prayerEffect === 'negative' ? PrayerEffect.NEGATIVE : PrayerEffect.NEUTRAL,
+      prayerEffect,
+      positiveBuffs,
+      negativeBuffs,
     });
     history.userId = userId;
 

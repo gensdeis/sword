@@ -77,17 +77,21 @@ export const useWeaponStore = create<WeaponState>((set, get) => ({
   enhanceWeapon: async (weaponId: number) => {
     try {
       const response = await api.post<EnhanceResponseDto>(`/weapons/${weaponId}/enhance`);
-      const { weapon: updatedWeapon, result } = response.data;
+      const { weapon: updatedWeapon, result, positiveBuffs, negativeBuffs } = response.data;
+
+      const prayerInfo = positiveBuffs > 0 || negativeBuffs > 0 
+        ? ` (기도 효과: 👍${positiveBuffs} 👎${negativeBuffs})`
+        : '';
 
       if (result === 'success' && updatedWeapon) {
         set((state) => ({
           weapons: state.weapons.map((w) => (w.id === weaponId ? updatedWeapon : w)),
         }));
-        toast.success(`강화 성공! (+${updatedWeapon.enhancementLevel})`);
+        toast.success(`강화 성공! (+${updatedWeapon.enhancementLevel})${prayerInfo}`);
       } else if (result === 'maintain') {
-        toast.error('강화에 실패했습니다.');
+        toast.error(`강화에 실패했습니다.${prayerInfo}`);
       } else if (result === 'destroyed') {
-        toast.error('무기가 파괴되었습니다!', { icon: '💥' });
+        toast.error(`무기가 파괴되었습니다!${prayerInfo}`, { icon: '💥' });
         // Remove weapon from local state
         set((state) => ({
           weapons: state.weapons.filter((weapon) => weapon.id !== weaponId),

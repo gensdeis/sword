@@ -47,14 +47,15 @@ export class PrayerController {
   @ApiBearerAuth()
   @ApiOperation({
     summary: 'Get prayer pool statistics',
-    description: 'Get current statistics of the global prayer pool (admin/debug)',
+    description: 'Get current statistics of the global prayer pool',
   })
   @ApiResponse({
     status: 200,
     description: 'Prayer pool statistics retrieved',
     type: PrayerPoolStatsDto,
   })
-  async getPrayerPoolStats(): Promise<PrayerPoolStatsDto> {
-    return await this.prayerService.getPrayerPoolStats();
+  async getPrayerPoolStats(@Request() req: any): Promise<PrayerPoolStatsDto> {
+    const userId = req.user.userId;
+    return await this.prayerService.getPrayerPoolStats(userId);
   }
 }
