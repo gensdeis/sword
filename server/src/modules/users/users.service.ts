@@ -10,12 +10,16 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UserResponseDto } from './dto/user-response.dto';
 import { v4 as uuidv4 } from 'uuid';
 import * as bcrypt from 'bcrypt';
+import { AttendanceService } from '../attendance/attendance.service';
+import { forwardRef, Inject } from '@nestjs/common';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+    @Inject(forwardRef(() => AttendanceService))
+    private readonly attendanceService: AttendanceService,
   ) {}
 
   async findById(id: number): Promise<User | null> {
@@ -89,6 +93,10 @@ export class UsersService {
       throw new NotFoundException('User not found');
     }
 
+    const consecutiveAttendanceDays = await this.attendanceService.getConsecutiveDays(userId);
+    const attendanceHistory = await this.attendanceService.getAttendanceHistory(userId, 1);
+    const lastAttendanceDate = attendanceHistory.length > 0 ? attendanceHistory[0].checkDate : null;
+
     return new UserResponseDto({
       id: user.id,
       username: user.username,
@@ -97,6 +105,8 @@ export class UsersService {
       enhancementStones: user.enhancementStones,
       createdAt: user.createdAt,
       updatedAt: user.updatedAt,
+      consecutiveAttendanceDays,
+      lastAttendanceDate,
     });
   }
 }

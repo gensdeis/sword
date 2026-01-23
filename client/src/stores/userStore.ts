@@ -32,7 +32,7 @@ export const useUserStore = create<UserState>((set, get) => ({
     try {
       const response = await api.post<any>('/attendance/check'); // any for now
 
-      const { gold, consecutiveDays } = response.data;
+      const { gold, consecutiveDays, checkedAt } = response.data;
 
       // Manually update user state after attendance
       set((state) => {
@@ -42,7 +42,7 @@ export const useUserStore = create<UserState>((set, get) => ({
             ...state.user,
             gold: state.user.gold + gold,
             consecutiveAttendanceDays: consecutiveDays,
-            lastAttendanceDate: new Date().toISOString(),
+            lastAttendanceDate: checkedAt,
           },
         };
       });

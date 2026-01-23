@@ -39,6 +39,14 @@ export class UserResponseDto {
   })
   @Expose()
   updatedAt: Date;
+  
+  @ApiProperty({ description: 'Consecutive attendance days', example: 5 })
+  @Expose()
+  consecutiveAttendanceDays: number;
+
+  @ApiProperty({ description: 'Last attendance date', example: '2024-01-01' })
+  @Expose()
+  lastAttendanceDate: Date | null;
 
   constructor(partial: Partial<UserResponseDto>) {
     Object.assign(this, partial);

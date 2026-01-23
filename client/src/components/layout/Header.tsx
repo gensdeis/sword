@@ -25,13 +25,21 @@ export default function Header() {
     if (!user?.lastAttendanceDate) {
       return false;
     }
-    const lastCheck = new Date(user.lastAttendanceDate);
-    const today = new Date();
-    return (
-      lastCheck.getFullYear() === today.getFullYear() &&
-      lastCheck.getMonth() === today.getMonth() &&
-      lastCheck.getDate() === today.getDate()
-    );
+    try {
+      // The server returns a Date object or an ISO string.
+      // We need to compare only the date part in the local timezone.
+      const lastCheck = new Date(user.lastAttendanceDate);
+      const today = new Date();
+      
+      return (
+        lastCheck.getFullYear() === today.getFullYear() &&
+        lastCheck.getMonth() === today.getMonth() &&
+        lastCheck.getDate() === today.getDate()
+      );
+    } catch (e) {
+      console.error('Error parsing lastAttendanceDate:', e);
+      return false;
+    }
   };
 
   const isAttendanceChecked = hasCheckedInToday();

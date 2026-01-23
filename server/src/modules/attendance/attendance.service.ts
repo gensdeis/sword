@@ -100,8 +100,19 @@ export class AttendanceService {
       return 0;
     }
 
-    let consecutiveDays = 1;
     const today = this.getTodayDate();
+    const mostRecentRecordDate = new Date(records[0].checkDate);
+
+    // Check if the most recent record is today or yesterday
+    const diffTimeWithToday = today.getTime() - mostRecentRecordDate.getTime();
+    const diffDaysWithToday = diffTimeWithToday / (1000 * 60 * 60 * 24);
+
+    if (diffDaysWithToday > 1) {
+      // Streak broken (last check-in was before yesterday)
+      return 0;
+    }
+
+    let consecutiveDays = 1;
 
     // Start from the most recent record
     for (let i = 0; i < records.length - 1; i++) {
@@ -110,11 +121,14 @@ export class AttendanceService {
 
       // Calculate difference in days
       const diffTime = currentDate.getTime() - nextDate.getTime();
-      const diffDays = diffTime / (1000 * 60 * 60 * 24);
+      const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24));
 
       // If exactly 1 day difference, continue streak
       if (diffDays === 1) {
         consecutiveDays++;
+      } else if (diffDays === 0) {
+        // Same day record (shouldn't happen with unique constraint, but for safety)
+        continue;
       } else {
         // Streak broken
         break;
