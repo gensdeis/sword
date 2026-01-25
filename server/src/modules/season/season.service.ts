@@ -1,6 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, MoreThan, LessThan } from 'typeorm';
+import { Cron, CronExpression } from '@nestjs/schedule';
 import { Season, SeasonStatus } from '../../entities/season.entity';
 import { SeasonRanking } from '../../entities/season-ranking.entity';
 import { RedisService } from '../redis/redis.service';
@@ -21,6 +22,55 @@ export class SeasonService {
   ) {}
 
   /**
+   * Cron job to handle season state transitions automatically
+   * Runs every minute to ensure DB status is up-to-date
+   */
+  @Cron(CronExpression.EVERY_MINUTE)
+  async handleSeasonTransitions() {
+    try {
+      const now = new Date();
+
+      // 1. Activate upcoming seasons that should be active
+      if (!this.isInSettlementPeriod()) {
+        const upcomingSeasons = await this.seasonRepository.find({
+          where: {
+            status: SeasonStatus.UPCOMING,
+            startAt: LessThan(now),
+            endAt: MoreThan(now),
+          },
+        });
+
+        for (const season of upcomingSeasons) {
+          this.logger.log(
+            `Scheduler: Automatically activating season #${season.seasonNumber} (ID: ${season.id})`,
+          );
+          season.status = SeasonStatus.ACTIVE;
+          await this.seasonRepository.save(season);
+        }
+      }
+
+      // 2. Settle active seasons that have ended
+      const expiredSeasons = await this.seasonRepository.find({
+        where: {
+          status: SeasonStatus.ACTIVE,
+          endAt: LessThan(now),
+        },
+      });
+
+      for (const season of expiredSeasons) {
+        if (this.isInSettlementPeriod()) {
+          this.logger.log(
+            `Scheduler: Automatically settling season #${season.seasonNumber} (ID: ${season.id})`,
+          );
+          await this.settleSeason(season.id);
+        }
+      }
+    } catch (error) {
+      this.logger.error('Error in season transition scheduler:', error.stack);
+    }
+  }
+
+  /**
    * Get the current active season
    */
   async getCurrentSeason(): Promise<Season | null> {
@@ -35,8 +85,8 @@ export class SeasonService {
       });
     }
 
-    // Return active season
-    return await this.seasonRepository.findOne({
+    // 1. Try to find an ACTIVE season
+    const activeSeason = await this.seasonRepository.findOne({
       where: {
         status: SeasonStatus.ACTIVE,
         startAt: LessThan(now),
@@ -44,6 +94,33 @@ export class SeasonService {
       },
       order: { seasonNumber: 'DESC' },
     });
+
+    if (activeSeason) {
+      return activeSeason;
+    }
+
+    // 2. If no ACTIVE season, check if there's an UPCOMING season that should be ACTIVE
+    // Only do this if we're not in the settlement period
+    if (!this.isInSettlementPeriod()) {
+      const upcomingSeason = await this.seasonRepository.findOne({
+        where: {
+          status: SeasonStatus.UPCOMING,
+          startAt: LessThan(now),
+          endAt: MoreThan(now),
+        },
+        order: { seasonNumber: 'DESC' },
+      });
+
+      if (upcomingSeason) {
+        this.logger.log(
+          `Automatically activating season #${upcomingSeason.seasonNumber} (ID: ${upcomingSeason.id})`,
+        );
+        upcomingSeason.status = SeasonStatus.ACTIVE;
+        return await this.seasonRepository.save(upcomingSeason);
+      }
+    }
+
+    return null;
   }
 
   /**
@@ -110,6 +187,14 @@ export class SeasonService {
 
     if (!season) {
       throw new Error(`Season ${seasonId} not found`);
+    }
+
+    // Prevent double settlement
+    if (
+      season.status === SeasonStatus.SETTLING ||
+      season.status === SeasonStatus.COMPLETED
+    ) {
+      return;
     }
 
     // Update season status to settling
