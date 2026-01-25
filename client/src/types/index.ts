@@ -72,29 +72,33 @@ export interface Opponent {
   userId: number;
   username: string;
   weaponLevel: number;
+  weaponName: string;
   weaponRarity: WeaponRarity;
+  winRate: number;
+}
+
+export interface BattleEnterResponse {
+  matchId: string;
+  opponent: Opponent;
+  entryFeePaid: number;
+  remainingGold: number;
 }
 
 export interface BattleRequest {
-  opponentId: number;
+  matchId: string;
 }
 
 export interface BattleResult {
-  victory: boolean;
-  goldReward: number;
-  newStreak: number;
-  attacker: {
-    userId: number;
-    username: string;
-    weapon: Weapon;
-    calculatedPower: number;
-  };
-  defender: {
-    userId: number;
-    username: string;
-    weapon: Weapon;
-    calculatedPower: number;
-  };
+  isWin: boolean;
+  pointsEarned: number;
+  goldEarned: number;
+  totalGold: number;
+  currentStreak: number;
+  ranking: number;
+  totalPoints: number;
+  winRate: number;
+  opponentName: string;
+  opponentLevel: number;
 }
 
 // Ranking types

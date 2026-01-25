@@ -26,14 +26,14 @@ export default function OpponentCard({ opponent }: OpponentCardProps) {
             <span className="font-bold text-gray-900">{opponent.username}</span>
           </p>
           <p>
-            <span className="text-gray-600">무기 등급:</span>{' '}
+            <span className="text-gray-600">무기:</span>{' '}
             <span className={cn('font-bold', getRarityColor(opponent.weaponRarity))}>
-              {getRarityLabel(opponent.weaponRarity)}
+              {opponent.weaponName} (+{opponent.weaponLevel})
             </span>
           </p>
           <p>
-            <span className="text-gray-600">무기 레벨:</span>{' '}
-            <span className="font-bold text-gray-900">+{opponent.weaponLevel}</span>
+            <span className="text-gray-600">예상 승률:</span>{' '}
+            <span className="font-bold text-blue-600">{opponent.winRate}%</span>
           </p>
         </div>
 

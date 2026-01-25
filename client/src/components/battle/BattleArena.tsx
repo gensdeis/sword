@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useUserStore } from '@/stores/userStore';
-import { Opponent, BattleResult } from '@/types';
+import { Opponent, BattleResult, BattleEnterResponse } from '@/types';
 import api from '@/lib/api';
 import Button from '@/components/common/Button';
 import Card from '@/components/common/Card';
@@ -18,6 +18,7 @@ export default function BattleArena() {
   const gold = user?.gold ?? 0;
   const [isLoading, setIsLoading] = useState(false);
   const [opponent, setOpponent] = useState<Opponent | null>(null);
+  const [matchId, setMatchId] = useState<string | null>(null);
   const [battleResult, setBattleResult] = useState<BattleResult | null>(null);
   const [showResult, setShowResult] = useState(false);
 
@@ -33,8 +34,9 @@ export default function BattleArena() {
 
     try {
       setIsLoading(true);
-      const response = await api.post<Opponent>('/battles/enter');
-      setOpponent(response.data);
+      const response = await api.post<BattleEnterResponse>('/battle/enter');
+      setOpponent(response.data.opponent);
+      setMatchId(response.data.matchId);
       await fetchProfile();
       toast.success('매칭이 완료되었습니다!');
     } catch (error) {
@@ -45,13 +47,11 @@ export default function BattleArena() {
   };
 
   const handleBattle = async () => {
-    if (!opponent) return;
+    if (!matchId) return;
 
     try {
       setIsLoading(true);
-      const response = await api.post<BattleResult>('/battles/fight', {
-        opponentId: opponent.userId,
-      });
+      const response = await api.post<BattleResult>(`/battle/${matchId}/execute`);
       setBattleResult(response.data);
       setShowResult(true);
       await fetchProfile();
@@ -66,6 +66,7 @@ export default function BattleArena() {
     setShowResult(false);
     setBattleResult(null);
     setOpponent(null);
+    setMatchId(null);
   };
 
   return (
