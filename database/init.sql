@@ -280,6 +280,6 @@ INSERT INTO `weapon_templates` (`name`, `rarity`, `base_attack`, `can_double_enh
 -- Create Initial Season
 -- ============================================
 INSERT INTO `seasons` (`season_number`, `start_at`, `end_at`, `status`, `reward_weapon_template_id`) VALUES
-(1, '2026-01-20 08:00:00', '2026-01-26 23:59:59', 'upcoming', 17);
+(1, '2026-01-20 08:00:00', '2026-01-26 23:59:59', 'active', 17);
 
 SET FOREIGN_KEY_CHECKS = 1;

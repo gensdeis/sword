@@ -50,10 +50,14 @@ export class BattleService {
     // Check if in settlement period
     const { isActive, isSettling } = await this.seasonService.getSeasonStatus();
 
-    if (isSettling || !isActive) {
+    if (isSettling) {
       throw new BadRequestException(
         'Battles are not available during settlement period (Monday 00:00 - 07:59)',
       );
+    }
+
+    if (!isActive) {
+      throw new BadRequestException('There is no active season at the moment.');
     }
 
     // Check if already in battle
