@@ -15,6 +15,24 @@ const EnhancementUI = () => {
   const [selectedWeapon, setSelectedWeapon] = useState<Weapon | null>(null);
   const [isEnhancing, setIsEnhancing] = useState(false);
 
+  const getEnhancementCost = (level: number) => {
+    if (level < 10) {
+      return {
+        type: 'gold',
+        amount: 100 + level * 50,
+        label: '골드',
+        icon: '💰'
+      };
+    } else {
+      return {
+        type: 'stones',
+        amount: 1 + (level - 10),
+        label: '보석',
+        icon: '💎'
+      };
+    }
+  };
+
   useEffect(() => {
     fetchWeapons();
     fetchProfile(); // To get updated gold and stones
@@ -86,13 +104,24 @@ const EnhancementUI = () => {
               <div className="mt-6">
                 <p className="text-sm font-medium">보유 강화석: {user?.enhancementStones ?? 0}</p>
                 <p className="text-sm font-medium">보유 골드: {user?.gold ?? 0}</p>
+                <div className="mt-4 pt-4 border-t border-gray-100">
+                  <p className="text-sm font-bold text-gray-700">소모 비용:</p>
+                  <p className={`text-lg font-bold ${
+                    selectedWeapon.enhancementLevel < 10 ? 'text-yellow-600' : 'text-blue-600'
+                  }`}>
+                    {getEnhancementCost(selectedWeapon.enhancementLevel).icon}{' '}
+                    {getEnhancementCost(selectedWeapon.enhancementLevel).amount}{' '}
+                    {getEnhancementCost(selectedWeapon.enhancementLevel).label}
+                  </p>
+                </div>
               </div>
               <Button
                 onClick={handleEnhance}
                 disabled={isEnhancing || !selectedWeapon}
                 className="mt-4 w-full"
+                variant={selectedWeapon.enhancementLevel < 10 ? 'primary' : 'danger'}
               >
-                {isEnhancing ? '강화 중...' : `강화 시도 (${selectedWeapon.enhancementLevel + 1}레벨)`}
+                {isEnhancing ? '강화 중...' : `강화 시도 (+${selectedWeapon.enhancementLevel + 1})`}
               </Button>
             </div>
           ) : (

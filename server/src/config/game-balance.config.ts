@@ -62,6 +62,15 @@ export const GAME_CONFIG = {
     MAX_SUCCESS_RATE: 75,
     MIN_DESTRUCTION_RATE: 1,
     MAX_DESTRUCTION_RATE: 65,
+
+    // Enhancement Costs
+    COSTS: {
+      GOLD_UNTIL_LEVEL: 10,
+      BASE_GOLD_COST: 100,
+      GOLD_COST_PER_LEVEL: 50,
+      BASE_STONE_COST: 1,
+      STONE_COST_PER_LEVEL: 1,
+    },
   },
 
   // === Prayer System ===
@@ -194,6 +203,28 @@ export function getRerollCost(rerollCount: number): number | null {
     GAME_CONFIG.GACHA.REROLL_BASE_COST +
     rerollCount * GAME_CONFIG.GACHA.REROLL_INCREMENT
   );
+}
+
+/**
+ * Helper function to calculate enhancement cost
+ */
+export function calculateEnhancementCost(level: number): {
+  gold: number;
+  stones: number;
+} {
+  const { COSTS } = GAME_CONFIG.ENHANCEMENT;
+
+  if (level < COSTS.GOLD_UNTIL_LEVEL) {
+    return {
+      gold: COSTS.BASE_GOLD_COST + level * COSTS.GOLD_COST_PER_LEVEL,
+      stones: 0,
+    };
+  } else {
+    return {
+      gold: 0,
+      stones: COSTS.BASE_STONE_COST + (level - COSTS.GOLD_UNTIL_LEVEL) * COSTS.STONE_COST_PER_LEVEL,
+    };
+  }
 }
 
 /**

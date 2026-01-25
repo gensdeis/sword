@@ -8,7 +8,7 @@ import { EnhancementHistory, EnhancementResult, PrayerEffect } from '@/entities/
 import { WeaponTemplate } from '@/entities/weapon-template.entity';
 import { PrayerService } from '@/modules/prayer/prayer.service';
 import { SeasonService } from '@/modules/season/season.service';
-import { GAME_CONFIG, getEnhancementRates } from '@/config/game-balance.config';
+import { GAME_CONFIG, getEnhancementRates, calculateEnhancementCost } from '@/config/game-balance.config';
 
 interface EnhancementRates {
   success: number;
@@ -70,6 +70,20 @@ export class EnhancementService {
     if (!user) {
       throw new NotFoundException('User not found');
     }
+
+    // Check and deduct cost
+    const cost = calculateEnhancementCost(weapon.enhancementLevel);
+    if (cost.gold > 0 && user.gold < cost.gold) {
+      throw new BadRequestException(`골드가 부족합니다. (필요 골드: ${cost.gold})`);
+    }
+    if (cost.stones > 0 && user.enhancementStones < cost.stones) {
+      throw new BadRequestException(`보석이 부족합니다. (필요 보석: ${cost.stones})`);
+    }
+
+    // Deduct cost
+    user.gold -= cost.gold;
+    user.enhancementStones -= cost.stones;
+    await this.userRepository.save(user);
 
     // Calculate enhancement rates with prayer effect
     const prayerStats = await this.prayerService.getPrayerPoolStats();

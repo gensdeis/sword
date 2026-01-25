@@ -9,7 +9,7 @@ import Loading from '@/components/common/Loading';
 export default function WeaponList() {
   const { weapons, isLoading, fetchWeapons, equipWeapon, sellWeapon } = useWeaponStore();
   const [filterRarity, setFilterRarity] = useState<WeaponRarity | 'ALL'>('ALL');
-  const [sortBy, setSortBy] = useState<'level' | 'rarity'>('level');
+  const [sortBy, setSortBy] = useState<'level' | 'rarity' | 'attack'>('level');
 
   useEffect(() => {
     fetchWeapons();
@@ -34,6 +34,8 @@ export default function WeaponList() {
   // Sort weapons
   if (sortBy === 'level') {
     filteredWeapons = [...filteredWeapons].sort((a, b) => b.enhancementLevel - a.enhancementLevel);
+  } else if (sortBy === 'attack') {
+    filteredWeapons = [...filteredWeapons].sort((a, b) => b.baseAttack - a.baseAttack);
   } else if (sortBy === 'rarity') {
     const rarityOrder = {
       [WeaponRarity.LEGENDARY]: 4,
@@ -73,10 +75,11 @@ export default function WeaponList() {
           <label className="block text-sm font-medium text-gray-700 mb-2">정렬</label>
           <select
             value={sortBy}
-            onChange={(e) => setSortBy(e.target.value as 'level' | 'rarity')}
+            onChange={(e) => setSortBy(e.target.value as 'level' | 'rarity' | 'attack')}
             className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             <option value="level">강화 레벨순</option>
+            <option value="attack">기본 공격력순</option>
             <option value="rarity">등급순</option>
           </select>
         </div>
