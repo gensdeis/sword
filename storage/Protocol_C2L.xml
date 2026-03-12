@@ -1,0 +1,264 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ProtocolList namespace="Protocol_C2L" protocol="1000">
+	<!-- 전처리기 	-->
+	<UnrealHead text='#include "../Define_Network/SMessage.h"'/>
+	<UnrealHead text='#include "../GlobalData/GlobalData_Server.h"'/>
+	<UnrealHead text='#include "../GlobalData/GlobalData_Player.h"'/>
+
+  <!-- 패킷 -->
+	<!-- Kick -->
+  	<Protocol name="L2C_ReportKick" crypt="aes">
+		<Property type="uint16" name="m_KickType" default=""/>
+		<Property type="string" name="m_KickReason" default=""/>
+	</Protocol>
+
+	<!-- 로그인 요청 -->
+	<Protocol name="C2L_RequestLogin" crypt="aes">
+		<Property type="string" name="m_AccountID" default=""/>
+		<Property type="string" name="m_NetmarbleID" default=""/>
+		<Property type="int16" name="m_CountryCode" default=""/> 				<!-- 가입국가 CountryCode::en -->
+		<Property type="int16" name="m_Language" default=""/> 					<!-- Langauge::en -->
+		<Property type="int16" name="m_Platform" default=""/> 					<!-- 플랫폼 타입 정의 추가 필요 -->
+		<Property type="int16" name="m_OSType" default=""/> 						<!-- OS 타입 정의 추가 필요 -->
+		<Property type="int16" name="m_AuthMode" default=""/>						<!-- PassWord, 넷마블 인증, nAuthorizedMode::en -->
+		<Property type="string" name="m_AuthToken" default=""/> 				<!-- 넷마블 인증 토큰 -->
+		<Property type="string" name="m_NMDeviceKey" default=""/>				<!-- 넷마블 DeviceKey -->
+		<Property type="string" name="m_NMBuildCode" default=""/> 			<!-- NMBuildCode A:19 , B:15, C:[NOT_USE] -->
+		<Property type="string" name="m_ADID" default=""/>							<!-- 넷마블 ADID -->
+		<Property type="int16" name="m_ConnectCountryCode" default=""/>	<!-- 접속국가 CountryCode::en -->
+		<Property type="int16" name="m_MarketType" default=""/> 				<!-- 마켓타입 MarketType::en -->
+		<Property type="string" name="m_TimeZone" default=""/>					<!-- 타임존 -->
+		<Property type="int32" name="m_ServerVersion" default=""/>
+		<Property type="string" name="m_ClientVersion" default="0.0.0"/>
+		<Property type="string" name="m_ClientResourceVersion" default="0.0.0"/>
+		<Property type="bool" name="m_WithCancelWithDraw" default="false"/>
+		<Property type="string" name="m_sLogCommon" default=""/> 								<!-- SLog -->
+		<Property type="string" name="m_AccessTokenForNetmarbleID" default=""/>	<!-- 넷마블 NID Access Token -->
+		<Property type="string" name="m_MktClickId" default=""/>
+		<Property type="int32" name="m_MktChannel" default=""/>
+		<Property type="string" name="m_NMLauncherID" default=""/>	<!-- 넷마블 런처의 고유 식별값 (UUID) -->
+	</Protocol>
+	<Protocol name="L2C_ResultLogin" crypt="aes" packet_type="result">
+		<Property type="int16" name="m_UserGrade" default="-1"/> 					<!-- EUserGrade -->
+		<Property type="bool" name="m_IsWhiteList" default=""/> 					<!-- WhiteList 여부 -->
+		<Property type="int64" name="m_SecurityToken" default=""/> 				<!-- 서버에서 발급한 Security Token -->
+		<Property type="bool" name="m_UseDefaultServerList" default=""/>
+		<Property type="list" name="m_ServerList" protocol="ServerInfo"/>
+		<Property type="int16" name="m_CDNResCode" default=""/>
+		<Property type="string" name="m_CDNConfig" default=""/>						<!-- CDN Config 정보 -->
+		<Property type="int64" name="m_GMT_LC_TimeDiff" defualt=""/>
+		<Property type="BlockInfoMap" name="m_BlockInfo" default="-1"/>
+		<Property type="int64" name="m_Today_SelectedShutDownTime_Start" default="-1"/>
+		<Property type="int64" name="m_Today_SelectedShutDownTime_End" default="-1"/>
+		<Property type="string" name="m_AuthExtraInfo" default=""/>
+		<Property type="OffLineHuntingInfo" name="m_OfflineHuntingInfo" default=""/>			
+		<Property type="list" name="m_PreemptionCharNameInfoList" protocol="PreemptionCharNameInfo"/>
+		<Property type="int16" name="m_NMDeviceRegistStatus" default="-1"/>	<!-- UNREGISTERED : 0 / PROCESS : 1 / COMPLETE : 2 -->
+		<Property type="bool" name="m_IsAccountGiftExist" default=""/>			<!-- 계정 선물 내역 존재 여부 -->
+	</Protocol>
+	<Protocol name="L2C_RequestOTPConfirm" crypt="aes">
+	</Protocol>
+	<Protocol name="C2L_ResultOTPConfirm" crypt="aes">
+		<Property type="string" name="m_AuthToken" default=""/> 			<!-- 넷마블 인증 토큰 -->
+	</Protocol>
+	<Protocol name="C2L_RequestOTPRenew" crypt="aes">
+	</Protocol>
+	<Protocol name="L2C_ResultOTPRenew" packet_type="result" crypt="aes">
+	</Protocol>
+	
+	<Protocol name="L2C_ReportServiceMaintenance">
+		<Property type="int64" name="m_ServiceMaintenance_Start" default="-1"/>
+		<Property type="int64" name="m_ServiceMaintenance_End" default="-1"/>
+		<Property type="string" name="m_ServiceMaintenance_Msg" default=""/>
+	</Protocol>
+	
+	<Protocol name="C2L_RequestServerList" crypt="aes">	
+		<Property type="uint16" name="m_Platform" default=""/> 				<!-- 플랫폼 타입 정의 추가 필요 -->
+		<Property type="int16" name="m_CountryCode" default=""/> 			<!-- CountryCode::en -->
+		<Property type="uint16" name="m_Language" default=""/> 				<!-- Langauge::en -->
+	</Protocol>
+	<Protocol name="L2C_ResultServerList" crypt="aes" packet_type="result">
+		<Property type="bool" name="m_UseDefaultServerList" default=""/>
+		<Property type="list" name="m_ServerList" protocol="ServerInfo"/>
+	</Protocol>
+	
+	<Protocol name="C2L_RequestWorldPlayerInfo" crypt="aes">
+	</Protocol>
+	<Protocol name="L2C_ResultWorldPlayerInfo" packet_type="result" crypt="aes">
+		<Property type="bool" name="m_IsBegin" default="false"/>
+		<Property type="bool" name="m_IsEnd" default="false"/>
+		<Property type="list" name="m_WorldPlayerList" protocol="PlayerData_Core"/>
+	</Protocol>
+	
+	<Protocol name="C2L_RequestSelectServer" crypt="aes">
+		<Property type="int" name="m_WorldNo" default=""/>
+	</Protocol>
+	<Protocol name="L2C_ResultSelectServer" crypt="aes" packet_type="result">
+		<Property type="int" name="m_WorldNo" default=""/>
+		<Property type="WaitingInfo" name="m_WaitingInfo" default=""/>
+	</Protocol>
+	
+	<Protocol name="L2C_ReportWaitingInfo" crypt="aes">
+		<Property type="int" name="m_WorldNo" default=""/>
+		<Property type="WaitingInfo" name="m_WaitingInfo" default=""/>
+	</Protocol>
+
+	<Protocol name="C2L_RequestExitWaiting" crypt="aes"/>
+	<Protocol name="L2C_ResultExitWaitingLine" crypt="aes" packet_type="result"/>
+	<Protocol name="L2C_ReportCancelWaitingLine" crypt="aes">
+		<Property type="int16" name="m_KickType" default="-1"/>
+	</Protocol>
+	
+	<Protocol name="L2C_ReportEnterServer" cryp="aes">
+		<Property type="int32" name="m_ExpandCharacterSlot" default=""/>
+		<Property type="OffLineHuntingInfo" name="m_OfflineHuntingInfo" default=""/>
+		<Property type="list" name="m_PlayerList" protocol="PlayerData_Lobby"/>
+	</Protocol>
+	
+	<Protocol name="L2C_ReportLobbyKick" crypt="aes">
+		<Property type="int16" name="m_KickType" default="-1"/>
+	</Protocol>
+
+	<Protocol name="C2L_RequestReturnSelectServer" crypt="aes">  			<!-- 서버선택 화면으로 돌아갈때 -->
+		<Property type="int64" name="m_SecurityToken" default=""/> 			<!-- 서버에서 발급한 Security Token -->
+	</Protocol>
+	<Protocol name="L2C_ResultReturnSelectServer" crypt="aes" packet_type="result">
+		<Property type="list" name="m_ServerList" protocol="ServerInfo"/>
+	</Protocol>
+	
+	<Protocol name="C2L_RequestCreatePlayer" crypt="aes">
+		<Property type="int64" name="m_SecurityToken" default=""/> 			<!-- 서버에서 발급한 Security Token -->
+		<Property type="string" name="m_Name" default=""/>
+		<Property type="int16" name="m_Gender" default=""/>
+		<Property type="int16" name="m_Job" default=""/>
+		<Property type="BodyInfo" name="m_BodyInfo" default=""/>			<!-- Customize 정보 - 추후 구현-->
+	</Protocol>
+	<Protocol name="L2C_ResultCreatePlayer" crypt="aes" packet_type="result">
+		<Property type="PlayerData_Lobby" name="m_NewPlayerData" default=""/>
+	</Protocol>
+	
+	<Protocol name="C2L_RequestDeletePeneltyTime" crypt="aes">
+		<Property type="int64" name="m_SecurityToken" default=""/> 			<!-- 서버에서 발급한 Security Token -->
+	</Protocol>
+	<Protocol name="L2C_ResultDeletePeneltyTime" crypt="aes" packet_type="result">
+		<Property type="int32" name="m_DeleteCount" default=""/>
+		<Property type="int32" name="m_DeleteOverCount" default=""/>
+		<Property type="int64" name="m_DeletePeneltyTime" default=""/>
+	</Protocol>
+	
+	<Protocol name="C2L_RequestDeletePlayer" crypt="aes">
+		<Property type="int64" name="m_SecurityToken" default=""/> 			<!-- 서버에서 발급한 Security Token -->
+		<Property type="int64" name="m_PlayerKey" default=""/>
+	</Protocol>
+	<Protocol name="L2C_ResultDeletePlayer" crypt="aes" packet_type="result">
+		<Property type="int64" name="m_PlayerKey" default=""/>
+		<Property type="int64" name="m_DeleteTime" default=""/>
+	</Protocol>
+	
+	<Protocol name="C2L_RequestRecoverPlayer" crypt="aes">
+		<Property type="int64" name="m_SecurityToken" default=""/> 			<!-- 서버에서 발급한 Security Token -->
+		<Property type="int64" name="m_PlayerKey" default=""/>
+	</Protocol>
+	<Protocol name="L2C_ResultRecoverPlayer" crypt="aes" packet_type="result">
+		<Property type="int64" name="m_PlayerKey" default=""/>
+	</Protocol>
+
+	<Protocol name="C2L_RequestSelectPlayer" crypt="aes">
+		<Property type="int64" name="m_SecurityToken" default=""/> 			<!-- 서버에서 발급한 Security Token -->
+		<Property type="int64" name="m_PlayerKey" default=""/>
+	</Protocol>
+	<Protocol name="L2C_ResultSelectPlayer" crypt="aes" packet_type="result">
+		<Property type="int64" name="m_PlayerKey" default=""/>
+		<Property type="string" name="m_ServiceAddress" default=""/>
+		<Property type="int" name="m_ServicePort" default=""/>
+	</Protocol>
+	
+	<Protocol name="C2L_RequestChangePlayerName" crypt="aes">
+		<Property type="int64" name="m_SecurityToken" default=""/> 			<!-- 서버에서 발급한 Security Token -->
+		<Property type="int64" name="m_PlayerKey" default=""/>
+		<Property type="string" name="m_ChangeName" default=""/>
+	</Protocol>
+	<Protocol name="L2C_ResultChangePlayerName" crypt="aes" packet_type="result">
+		<Property type="int64" name="m_PlayerKey" default=""/>
+		<Property type="string" name="m_ChangeName" default=""/>
+	</Protocol>
+
+	<Protocol name="C2L_RequestNMDeviceRegistStatusCheck" crypt="aes">
+	</Protocol>
+	<Protocol name="L2C_ResultNMDeviceRegistStatusCheck" crypt="aes" packet_type="result">
+		<Property type="int16" name="m_NMDeviceRegistStatus" default="-1"/>  <!-- UNREGISTERED : 0 / PROCESS : 1 / COMPLETE : 2 -->
+		<Property type="string" name="m_NMDeviceRegistCheckErrorMessage" default="-1"/>
+	</Protocol>
+	
+	<Protocol name="C2L_ReportWithDraw" crypt="aes">
+		<Property type="bool" name="m_IsRegist" default="true"/>
+	</Protocol>
+	
+	<Protocol name="L2C_ReportPatchRegist">
+	</Protocol>
+	
+	<Protocol name="L2C_ReportWorldTransferRolledBack" crypt="aes" packet_type="result">
+	</Protocol>
+
+	<!-- HeartBeat -->
+	<Protocol name="C2L_ReportHeartBeatPause">
+	</Protocol>
+	<Protocol name="C2L_ReportHeartBeatResume">
+	</Protocol>
+
+	<!-- 캐릭터 보관함 꺼내기-->
+	<Protocol name="C2L_RequestLockerCharacterWithdraw" crypt="aes">
+		<Property type="int64" name="m_SecurityToken" default=""/>
+		<Property type="vector" name="m_PlayerKeyList" protocol="int64"/>
+	</Protocol>
+	<Protocol name="L2C_ResultLockerCharacterWithdraw" crypt="aes" packet_type="result">
+		<Property type="vector" name="m_PlayerKeyList" protocol="int64"/>
+	</Protocol>
+
+	<!-- 계정 선물하기 -->
+	<Protocol name="C2L_RequestAccountGiftManagement" crypt="aes">
+	</Protocol>
+	<Protocol name="L2C_ResultAccountGiftManagement" crypt="aes" packet_type="result">
+		<Property type="string" name="m_WorldName" default=""/>
+		<Property type="bool" name="m_IsSafeWorld" default=""/>
+		<Property type="string" name="m_AccountCode" default=""/>
+		<Property type="long long" name="m_ExpireTime" default="-1"/>
+		<Property type="list" name="m_CharacterList" protocol="AccountGiftCharacter"/>
+		<Property type="list" name="m_CollectionList" protocol="AccountGiftCollection"/>
+		<Property type="list" name="m_CurrencyList" protocol="CurrencyData"/>
+	</Protocol>
+
+	<Protocol name="C2L_RequestAccountGiftCancel" crypt="aes">
+	</Protocol>
+	<Protocol name="L2C_ResultAccountGiftCancel" crypt="aes" packet_type="result">
+	</Protocol>
+
+	<Protocol name="C2L_RequestAccountGiftInquiry" crypt="aes">
+		<Property type="string" name="m_AccountCode" default=""/>
+		<Property type="string" name="m_Password" default=""/>
+	</Protocol>
+	<Protocol name="L2C_ResultAccountGiftInquiry" crypt="aes" packet_type="result">
+		<Property type="string" name="m_WorldName" default=""/>
+		<Property type="bool" name="m_IsSafeWorld" default=""/>
+		<Property type="list" name="m_CharacterList" protocol="AccountGiftCharacter"/>
+		<Property type="list" name="m_CollectionList" protocol="AccountGiftCollection"/>
+		<Property type="list" name="m_CurrencyList" protocol="CurrencyData"/>
+	</Protocol>
+
+	<Protocol name="C2L_RequestAccountGiftReceive" crypt="aes">
+		<Property type="string" name="m_AccountCode" default=""/>
+	</Protocol>
+	<Protocol name="L2C_ResultAccountGiftReceive" crypt="aes" packet_type="result">
+	</Protocol>
+
+	<Protocol name="L2C_ReportAccountGiftDeleted" crypt="aes">
+	</Protocol>
+
+	<Protocol name="C2L_RequestMainPlayerChange">
+		<Property type="long long" name="m_MainPlayerKey" default="-1"/>
+	</Protocol>
+	<Protocol name="L2C_ResultMainPlayerChange" packet_type="result">
+		<Property type="long long" name="m_MainPlayerKey" default="-1"/>
+	</Protocol>
+
+</ProtocolList>

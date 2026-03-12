@@ -1,0 +1,383 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ProtocolList namespace="Protocol_P2MT" protocol="40000">
+	<!-- 전처리기 -->
+	<UnrealHead text='#include "../Define_Network/SMessage.h"'/>
+
+	<Protocol name="P2MT_RequestLogin">
+		<Property type="int32" name="m_ServerVersion" default=""/>
+		<Property type="int" name="m_ServicePort" default=""/>
+	</Protocol>
+	<Protocol name="MT2P_ResultLogin" packet_type="result">
+		<Property type="list" name="m_WorldGroupList" protocol="WorldGroupInfo"/>
+	</Protocol>
+	
+	<Protocol name="P2MT_RequestMoveIntegrationServer">
+		<Property type="VirtualUser" name="m_VirtualUser" default=""/>
+		<Property type="int64" name="m_RequestGUID" default=""/>
+		<Property type="string" name="m_ChangeZoneID" default=""/>
+		<Property type="PosData" name="m_LastZonePos" default=""/>
+	</Protocol>
+	<Protocol name="MT2P_ResultMoveIntegrationServer" packet_type="result">
+		<Property type="int64" name="m_PlayerKey" default="-1"/>
+		<Property type="int64" name="m_RequestGUID" default=""/>
+		<Property type="int32" name="m_ReserveCount" default=""/>
+		<Property type="int32" name="m_IntegrationWorldNo" default="-1"/>
+		<Property type="nIntegrationContentsType" name="m_ContentsType" default=""/>
+		<Property type="string" name="m_ChangeZoneID" default=""/>
+		<Property type="PosData" name="m_LastZonePos" default=""/>
+		<Property type="string" name="m_ServiceAddress" default=""/>
+		<Property type="int32" name="m_ServicePort" default=""/>
+		<Property type="int64" name="m_SecurityToken" default=""/>		
+	</Protocol>
+	
+	<Protocol name="MT2I_RequestMoveIntegrationServer">
+		<Property type="int64" name="m_PlaySessionKey" default="-1"/>
+		<Property type="int64" name="m_RequestGUID" default=""/>
+		<Property type="VirtualUser" name="m_VirtualUser" default=""/>
+		<Property type="string" name="m_ChangeZoneID" default=""/>
+		<Property type="PosData" name="m_LastZonePos" default=""/>
+		<Property type="int32" name="m_IntegrationWorldNo" default="-1"/>
+	</Protocol>
+	
+	<Protocol name="I2MT_ResultMoveIntegrationServer" packet_type="result">
+		<Property type="int64" name="m_PlaySessionKey" default="-1"/>
+		<Property type="int64" name="m_RequestGUID" default=""/>
+		<Property type="VirtualUser" name="m_VirtualUser" default=""/>
+		<Property type="string" name="m_ChangeZoneID" default=""/>
+		<Property type="PosData" name="m_LastZonePos" default=""/>
+		<Property type="int32" name="m_IntegrationWorldNo" default="-1"/>
+	</Protocol>
+	
+	<Protocol name="P2MT_RequestServerSelect">
+		<Property type="int64" name="m_LobbySessionKey" default=""/>
+		<Property type="string" name="m_AccountID" default=""/>
+		<Property type="string" name="m_NetmarbleID" default=""/>
+		<Property type="int32" name="m_WorldNo" default=""/>
+		<Property type="int64" name="m_SecurityToken" default=""/>
+		<Property type="bool" name="m_IsWhiteList" default=""/>
+		<Property type="bool" name="m_IsSpecialLogin" default=""/>
+		<Property type="int16" name="m_UserGrade" default=""/>
+		<Property type="int16" name="m_OSType" default="-1"/>
+		<Property type="int16" name="m_PlatformType" default="-1"/>
+		<Property type="int16" name="m_MarketType" default="-1"/>
+		<Property type="int16" name="m_CountryCode" default="-1"/>
+		<Property type="int16" name="m_ConnectCountryCode" default="-1"/>
+		<Property type="int16" name="m_Language" default="-1"/>
+		<Property type="string" name="m_TimeZone" default=""/>
+		<Property type="string" name="m_NM_DeviceKey" default=""/>
+		<Property type="string" name="m_NM_ADID" default=""/>
+		<Property type="string" name="m_NM_SLog" default=""/>
+		<Property type="string" name="m_NM_BuildCode" default=""/>
+		<Property type="string" name="m_NM_LauncherID" default=""/>
+	</Protocol>
+	
+	<Protocol name="MT2P_ResultServerSelect" packet_type="result">
+		<Property type="int64" name="m_LobbySessionKey" default=""/>
+		<Property type="string" name="m_AccountID" default=""/>
+		<Property type="string" name="m_NetmarbleID" default=""/>
+		<Property type="int32" name="m_WorldNo" default=""/>
+		<Property type="int64" name="m_SecurityToken" default=""/>
+		<Property type="bool" name="m_IsWhiteList" default=""/>
+		<Property type="bool" name="m_IsSpecialLogin" default=""/>
+		<Property type="int16" name="m_UserGrade" default=""/>
+		<Property type="int16" name="m_OSType" default="-1"/>
+		<Property type="int16" name="m_PlatformType" default="-1"/>
+		<Property type="int16" name="m_MarketType" default="-1"/>
+		<Property type="int16" name="m_CountryCode" default="-1"/>
+		<Property type="int16" name="m_ConnectCountryCode" default="-1"/>
+		<Property type="int16" name="m_Language" default="-1"/>
+		<Property type="string" name="m_TimeZone" default=""/>
+		<Property type="string" name="m_NM_DeviceKey" default=""/>
+		<Property type="string" name="m_NM_ADID" default=""/>
+		<Property type="string" name="m_NM_SLog" default=""/>
+		<Property type="string" name="m_NM_BuildCode" default=""/>
+		<Property type="string" name="m_NM_LauncherID" default=""/>
+	</Protocol>
+	
+	<Protocol name="P2MT_RequestLoginPlayer">
+		<Property type="int64" name="m_PlayerSessionKey" default=""/>
+		<Property type="int64" name="m_PlayerKey" default=""/>
+		<Property type="string" name="m_AccountID" default=""/>
+		<Property type="int64" name="m_SecurityToken" default=""/>
+		<Property type="bool" name="m_NeedRemotePush" default=""/>
+		<Property type="string" name="m_MktClickId" default=""/>
+		<Property type="int32" name="m_MktChannel" default=""/>
+	</Protocol>
+	<Protocol name="MT2P_ResultLoginPlayer" packet_type="result">
+		<Property type="int64" name="m_PlayerSessionKey" default=""/>
+		<Property type="int32" name="m_PlayerState" default=""/>
+		<Property type="VirtualUser" name="m_VirtualUser" default=""/>
+		<Property type="nIntegrationContentsType" name="m_ContentsType" default=""/>
+		<Property type="int64" name="m_SecurityToken" default=""/>
+		<Property type="bool" name="m_NeedRemotePush" default=""/>
+		<Property type="string" name="m_MktClickId" default=""/>
+		<Property type="int32" name="m_MktChannel" default=""/>
+		<Property type="string" name="m_ChangeZoneID" default=""/>
+		<Property type="PosData" name="m_LastZonePos" default=""/>
+		<Property type="int" name="m_ChannelNum" default=""/>
+		<Property type="int" name="m_WorldNo" default=""/>
+		<Property type="string" name="m_ServiceAddress" default=""/>
+		<Property type="int32" name="m_ServicePort" default=""/>
+	</Protocol>
+
+	<Protocol name="I2MT_RequestReturnPlayServer">
+		<Property type="int64" name="m_PlayerKey" default=""/>
+		<Property type="int64" name="m_RequestGUID" default=""/>
+		<Property type="string" name="m_ChangeZoneID" default=""/>
+		<Property type="PosData" name="m_LastZonePos" default=""/>
+		<Property type="int16" name="m_KickType" default=""/>
+		<Property type="bool" name="m_IsForceChangePos" default=""/>
+		<Property type="PosData" name="m_ForcePosData" default=""/>
+		<Property type="bool" name="m_NeedRemotePush" default=""/>
+		<Property type="string" name="m_MktClickId" default=""/>
+		<Property type="int32" name="m_MktChannel" default=""/>
+	</Protocol>	
+	<Protocol name="MT2I_ResultReturnPlayServer" packet_type="result">
+		<Property type="int64" name="m_PlayerKey" default=""/>
+		<Property type="int64" name="m_RequestGUID" default=""/>
+		<Property type="int32" name="m_WorldNo" default="-1"/>
+		<Property type="string" name="m_ChangeZoneID" default=""/>
+		<Property type="int16" name="m_KickType" default=""/>
+		<Property type="bool" name="m_IsForceChangePos" default=""/>
+		<Property type="PosData" name="m_ForcePosData" default=""/>
+		<Property type="string" name="m_ServiceAddress" default=""/>
+		<Property type="int32" name="m_ServicePort" default=""/>
+		<Property type="int64" name="m_SecurityToken" default=""/>		
+	</Protocol>
+	<Protocol name="MT2P_RequestReturnPlayServer">
+		<Property type="int64" name="m_IntegrationSessionKey" default="-1"/>
+		<Property type="ReturnPlayer" name="m_ReturnPlayer" default=""/>
+		<Property type="VirtualUser" name="m_VirtualUser" default=""/>
+	</Protocol>
+	<Protocol name="P2MT_ResultReturnPlayServer" packet_type="result">
+		<Property type="int64" name="m_IntegrationSessionKey" default="-1"/>
+		<Property type="ReturnPlayer" name="m_ReturnPlayer" default=""/>
+	</Protocol>
+
+	<Protocol name="I2MT_ReportClosePlayer">	
+		<Property type="int64" name="m_PlayerKey" default=""/>
+		<Property type="int16" name="m_KickType" default=""/>
+	</Protocol>
+
+	<Protocol name="I2MT_ReportRemoveZone">
+		<Property type="string" name="m_ZoneID" default=""/>
+		<Property type="int64" name="m_ZoneGUID" default=""/>
+		<Property type="set" name="m_PaidPlayers" protocol="long long"/>
+	</Protocol>
+	<Protocol name="I2MT_ReportZoneStatus">
+		<Property type="string" name="m_ZoneID" default=""/>
+		<Property type="int64" name="m_ZoneGUID" default=""/>
+		<Property type="int32" name="m_ChannelNum" default=""/>
+		<Property type="int32" name="m_UserCount" default=""/>
+	</Protocol>
+	<Protocol name="I2MT_ReportIntegrationStatus">	
+		<Property type="int32" name="m_WorldNo" default=""/>
+		<Property type="int32" name="m_PlayingUserCount" default="-1"/>
+	</Protocol>
+	
+	<Protocol name="MT2P_ReportIntegrationStatus">	
+		<Property type="int32" name="m_PlayingUserCount" default="-1"/>
+	</Protocol>
+
+	<!-- 매치메이킹 -->
+	<Protocol name="P2MT_RequestStartMatchmaking" group="Match">
+		<Property type="MatchTicketInfo" name="m_MatchTicketInfo" default=""/>
+		<Property type="bool" name="m_IsAcceptMinMatching" default=""/>
+	</Protocol>
+	<Protocol name="MT2P_ResultStartMatchmaking" packet_type="result" group="Match">
+		<Property type="int64" name="m_PlayerKey" default="-1"/>
+		<Property type="MatchTicketInfo" name="m_MatchTicketInfo" default=""/>
+	</Protocol>
+
+	<Protocol name="P2MT_RequestStopMatchmaking" group="Match">
+		<Property type="int64" name="m_PlayerKey" default="-1"/>
+	</Protocol>
+	<Protocol name="MT2P_ResultStopMatchmaking" packet_type="result" group="Match">
+		<Property type="int64" name="m_PlayerKey" default="-1"/>
+		<Property type="MatchTicketInfo" name="m_MatchTicketInfo" default=""/>
+	</Protocol>
+
+	<Protocol name="MT2I_RequestPlaceMatchSession" group="Match">
+		<Property type="MatchSessionInfo" name="m_MatchSessionInfo" default=""/>
+		<Property type="list" name="m_PlayerAcceptInfos" protocol="PlayerMatchAcceptInfo"/>
+		<Property type="list" name="m_Players" protocol="MatchPlayerInfo"/>
+	</Protocol>
+	<Protocol name="I2MT_ResultPlaceMatchSession" packet_type="result" group="Match">
+		<Property type="IntegrationZoneInstanceInfo" name="m_InstanceZoneInfo" default=""/>
+	</Protocol>
+
+	<Protocol name="I2MT_ReportIntegrationZoneInstanceDungeonUpdate" group="Match">
+		<Property type="IntegrationZoneInstanceInfoDungeon" name="m_IntegrationZoneInstanceInfoDungeon" default=""/>
+	</Protocol>
+	
+	
+	<Protocol name="P2MT_RequestIntegrationZoneInstanceInfo" group="Match">
+		<Property type="long long" name="m_PlayerKey" default="-1"/>
+	</Protocol>
+
+	<Protocol name="MT2I_ReportIntegrationZoneInstanceTimedOut" group="Match">
+		<Property type="long long" name="m_ZoneGUID" default="-1"/>
+	</Protocol>
+	
+
+	<Protocol name="P2MT_RequestIntegrationZoneInstanceLeave" group="Match">
+		<Property type="long long" name="m_PlayerKey" default="-1"/>
+	</Protocol>
+	<Protocol name="MT2I_RequestIntegrationZoneInstanceLeave" group="Match">
+		<Property type="long long" name="m_PlayerKey" default="-1"/>
+		<Property type="long long" name="m_ZoneGUID" default="-1"/>
+	</Protocol>
+	<Protocol name="I2MT_ReportIntegrationZoneInstanceLeave" group="Match">
+		<Property type="bool" name="m_IsDodge" default=""/>
+		<Property type="long long" name="m_PlayerKey" default="-1"/>
+		<Property type="long long" name="m_ZoneGUID" default="-1"/>
+	</Protocol>
+	
+	<Protocol name="P2MT_RequestIntegrationZoneInstanceEnter" group="Match">
+		<Property type="VirtualUser" name="m_VirtualUser" default=""/>
+		<Property type="string" name="m_ZoneID" default=""/>
+		<Property type="string" name="m_SkillID" default=""/>
+		<Property type="long long" name="m_CastingEndTimeMsec" default="0"/>
+	</Protocol>
+	<Protocol name="MT2P_ResultIntegrationZoneInstanceEnter" packet_type="result" group="Match">
+		<Property type="long long" name="m_PlayerKey" default="-1"/>
+		<Property type="string" name="m_SkillID" default=""/>
+		<Property type="IntegrationZoneInstanceInfo" name="m_IntegrationZoneInstanceInfo" default=""/>
+		<Property type="list" name="m_ValueList" protocol="string"/>
+		<Property type="long long" name="m_CastingEndTimeMsec" default="0"/>
+	</Protocol>
+	
+	<Protocol name="P2MT_ReportAcceptMinMatching" group="Match">
+		<Property type="int64" name="m_PlayerKey" default="-1"/>
+		<Property type="bool" name="m_IsAcceptMinMatching" default=""/>
+	</Protocol>
+
+
+	<!-- 던전 진행 상태 - 던전 미입장 -->
+	<Protocol name="P2MT_RequestDungeonMissionState">
+		<Property type="string" name="m_DungeonID" default=""/>
+		<Property type="int64" name="m_PlayerKey" default="-1"/>
+	</Protocol>
+	<Protocol name="MT2P_ResultDungeonMissionState" packet_type="result">
+		<Property type="int64" name="m_PlayerKey" default="-1"/>
+		<Property type="string" name="m_DungeonID" default=""/>
+		<Property type="MissionData" name="m_DungeonMission" default=""/>
+	</Protocol>
+
+	<!-- 치트 -->
+	<Protocol name="P2MT_RequestCheat">
+		<Property type="int64" name="m_PlayerKey" default="-1"/>
+		<Property type="string" name="m_Command" default=""/>
+		<Property type="list" name="m_Parameter" protocol="string"/>
+	</Protocol>
+	<Protocol name="MT2P_ResultCheat" packet_type="result">
+		<Property type="int64" name="m_PlayerKey" default="-1"/>
+		<Property type="string" name="m_Command" default=""/>
+		<Property type="list" name="m_Parameter" protocol="string"/>
+	</Protocol>
+
+	<!-- 심연 보스 정보 -->
+	<Protocol name="I2MT_ReportUpdateAbyssBossInfo">
+		<Property type="int32" name="m_IntegrationWorldNo" default=""/>
+		<Property type="list" name="m_AbyssBossSpawnInfoList" protocol="AbyssBossSpawnInfo"/>
+	</Protocol>
+
+	<Protocol name="MT2P_ReportUpdateAbyssBossInfo">
+		<Property type="list" name="m_AbyssBossSpawnInfoList" protocol="AbyssBossSpawnInfo"/>
+	</Protocol>
+
+	<!-- 존 플레이어 수 -->
+	<Protocol name="P2MT_ReportZonePlayerCount">
+		<Property type="nIntegrationContentsType" name="m_ContentsType" default=""/>
+		<Property type="list" name="m_ZoneIDList" protocol="string"/>
+	</Protocol>
+	<Protocol name="MT2P_ReportZonePlayerCount">
+		<Property type="nIntegrationContentsType" name="m_ContentsType" default=""/>
+		<Property type="list" name="m_ZonePlayerCountList" protocol="ZonePlayerCount"/>
+	</Protocol>
+
+	<Protocol name="P2MT_ReportIntegrationEnterZone">
+		<Property type="int64" name="m_PlayerKey" default=""/>
+		<Property type="string" name="m_ZoneID" default=""/>
+	</Protocol>
+	
+	<!-- 통합 총력전 -->
+	<Protocol name="I2MT_ReportAllOutWarSeasonState">
+		<Property type="AllOutWar_CacheInfo" name="m_AllOutWarCacheInfo" default=""/>
+	</Protocol>
+	<Protocol name="MT2P_ReportAllOutWarSeasonState">
+		<Property type="AllOutWar_CacheInfo" name="m_AllOutWarCacheInfo" default=""/>
+	</Protocol>
+	
+	<Protocol name="MT2P_ReportIntegrationContentsMappedWorldNoInfo">	
+		<Property type="IntegrationContentsMappedWorldNoInfo" name="m_MappedInfo" default=""/>
+	</Protocol>
+
+	<Protocol name="P2MT_ReportGuildDismiss">
+		<Property type="int64" name="m_GuildGuid" default=""/>
+	</Protocol>
+	
+	<Protocol name="MT2I_ReportGuildDismiss">
+		<Property type="int64" name="m_GuildGuid" default=""/>
+	</Protocol>
+
+	<!-- 보스 정보 -->
+	<Protocol name="P2MT_ReportFieldBossInfo">
+		<Property type="int32" name="m_WorldNo" default="-1"/>
+		<Property type="WorldFieldBossInfo" name="m_WorldFieldBossInfoList" default=""/>
+	</Protocol>
+
+	<Protocol name="MT2I_ReportFieldBossInfo">
+		<Property type="WorldFieldBossInfo" name="m_WorldFieldBossInfoList" default=""/>
+	</Protocol>
+	
+	<!-- 공성전	-->
+	<Protocol name="I2MT_ReportSiegeWarServiceInfo">
+		<Property type="list" name="m_SiegeWarServiceInfoList" protocol="SiegeWarServiceInfo"/>
+	</Protocol>
+	<Protocol name="MT2P_ReportSiegeWarServiceInfo">
+		<Property type="list" name="m_SiegeWarServiceInfoList" protocol="SiegeWarServiceInfo"/>
+	</Protocol>
+	<Protocol name="I2MT_ReportSiegeWarSystemMessage">
+		<Property type="string" name="m_SystemMessageID" default=""/>
+		<Property type="list" name="m_Parameters" protocol="MsgParameter"/>
+	</Protocol>
+	<Protocol name="MT2P_ReportSiegeWarSystemMessage">
+		<Property type="string" name="m_SystemMessageID" default=""/>
+		<Property type="list" name="m_Parameters" protocol="MsgParameter"/>
+	</Protocol>
+
+	<Protocol name="I2MT_RequestGuildReward">
+		<Protocol type="list" name="m_RequestGuildRewardInfo" protocol="RequestGuildRewardInfo"/>
+	</Protocol>
+	<Protocol name="MT2P_RequestGuildReward">
+		<Protocol type="list" name="m_RequestGuildRewardInfo" protocol="RequestGuildRewardInfo"/>
+	</Protocol>
+	<Protocol name="I2MT_RequestPlayerReward">
+		<Protocol type="list" name="m_RequestPlayerRewardInfo" protocol="RequestPlayerRewardInfo"/>
+	</Protocol>
+	<Protocol name="MT2P_RequestPlayerReward">
+		<Protocol type="list" name="m_RequestPlayerRewardInfo" protocol="RequestPlayerRewardInfo"/>
+	</Protocol>
+
+	<Protocol name="I2MT_ReportSiegeWarStateInfo">
+		<Property type="SiegeWarInfo" name="m_SiegeWarStateInfo" default=""/>
+	</Protocol>
+	<Protocol name="MT2P_ReportSiegeWarStateInfo">
+		<Property type="SiegeWarInfo" name="m_SiegeWarStateInfo" default=""/>
+	</Protocol>
+
+	<Protocol name="I2MT_RequestPlayerRewardRemove">
+		<Protocol type="list" name="m_RequestPlayerRewardInfo" protocol="RequestPlayerRewardInfo"/>
+	</Protocol>
+	<Protocol name="MT2P_RequestPlayerRewardRemove">
+		<Protocol type="list" name="m_RequestPlayerRewardInfo" protocol="RequestPlayerRewardInfo"/>
+	</Protocol>
+	<Protocol name="I2MT_RequestGuildRewardRemove">
+		<Protocol type="list" name="m_RequestGuildRewardInfo" protocol="RequestGuildRewardInfo"/>
+	</Protocol>
+	<Protocol name="MT2P_RequestGuildRewardRemove">
+		<Protocol type="list" name="m_RequestGuildRewardInfo" protocol="RequestGuildRewardInfo"/>
+	</Protocol>
+
+</ProtocolList>

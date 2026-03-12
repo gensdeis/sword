@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ProtocolList namespace="Protocol_S2M" protocol="20000">
+	<!-- 전처리기 -->
+	<CPPHead text='#include "../Define_Network/SMessage.h"'/>
+	<UnrealHead text='#include "../Define_Network/SMessage.h"'/>
+	
+	<Protocol name="S2M_RequestLogin">
+	</Protocol>
+	
+	<Protocol name="M2S_ResultLogin" packet_type="result">
+	</Protocol>
+	
+	<Protocol name="S2M_RequestServerInfo">
+	</Protocol>
+
+	<Protocol name="M2S_ResultServerInfo" packet_type="result">
+		<Property type="list" name="m_LobbyServerInfo" protocol="LobbyServiceInfo"/>
+		<Property type="list" name="m_WorldServerInfo" protocol="WorldServiceInfoEx"/>
+		<Property type="list" name="m_IntegrationWorldServerInfo" protocol="IntegrationServiceSpecterInfo"/>
+		<Property type="list" name="m_ServerStatusInfo" protocol="int"/>
+	</Protocol>
+	
+	<Protocol name="S2M_ReportSpecterChangedServerState">
+		<Property type="string" name="m_ServiceIP" default=""/>
+		<Property type="char" name="m_ChangeState" default="-1"/>
+	</Protocol>
+	
+	<Protocol name="S2M_ReportSpecterChangedLauncherOption">
+		<Property type="string" name="m_ServiceIP" default=""/>
+		<Property type="int" name="m_Option" default=""/>
+		<Property type="bool" name="m_IsOnOff" default=""/>
+	</Protocol>
+
+	<Protocol name="S2M_ReportSpecterChangedServerStateAll">
+		<Property type="list" name="m_ServiceIPList" protocol="string"/>
+		<Property type="char" name="m_ChangeState" default="-1"/>
+	</Protocol>
+
+</ProtocolList>

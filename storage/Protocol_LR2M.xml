@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ProtocolList namespace="Protocol_LR2M" protocol="30000">
+	<!-- 전처리기 -->
+	<UnrealHead text='#include "../Define_Network/SMessage.h"'/>
+
+  <Protocol name="LR2M_RequestRegistLauncher">
+    <Property type="string" name="m_IP" default=""/>
+    <Property type="bool" name="m_LobbyServerControlFlag" default=""/>
+    <Property type="char" name="m_AutoStart" default=""/>
+    <Property type="char" name="m_Notify" default=""/>
+    <Property type="char" name="m_AllSelect" default=""/>
+    <Property type="char" name="m_ManageServer" default=""/>
+    <Property type="char" name="m_LobbyServer" default=""/>
+    <Property type="char" name="m_PlayServer" default=""/>
+  </Protocol>
+  
+  <Protocol name="M2LR_ResultRegistLauncher" packet_type="result">
+  </Protocol> 
+
+  <Protocol name="M2LR_RequestChangeServerState">
+    <Property type="char" name="m_ChangeState" default="-1"/>
+  </Protocol>
+
+  <Protocol name="LR2M_ResultChangeServerState" packet_type="result">
+  </Protocol>
+
+  <Protocol name="LR2M_ReportOptionCheckState">
+    <Property type="char" name="m_AutoStart" default=""/>
+    <Property type="char" name="m_Notify" default=""/>
+    <Property type="char" name="m_AllSelect" default=""/>
+    <Property type="char" name="m_ManageServer" default=""/>
+    <Property type="char" name="m_LobbyServer" default=""/>
+    <Property type="char" name="m_PlayServer" default=""/>
+  </Protocol>
+
+  <Protocol name="M2LR_ReportSpecterChangedLauncherOption">
+    <Property type="int" name="m_Option" default=""/>
+    <Property type="bool" name="m_IsOnOff" default=""/>
+  </Protocol>
+
+</ProtocolList>

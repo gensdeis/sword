@@ -1,0 +1,247 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ProtocolList namespace="Protocol_L2M" protocol="100">
+	<!-- 전처리기 -->
+	<CPPHead text='#include "../Define_Network/SMessage.h"'/>
+	<UnreaaHead text='#include "../Define_Network/SMessage.h"'/>
+	
+	<Protocol name="L2M_RequestLogin">
+		<Property type="int32" name="m_ServerVersion" default=""/>
+	</Protocol>
+	<Protocol name="M2L_ResultLogin" packet_type="result">
+		<Property type="int32" name="m_LobbyManageKey" default="-1"/>
+		<Property type="list" name="m_RegistWorldServiceInfo" protocol="WorldServiceInfo"/>
+		<Property type="list" name="m_ActiveWorldServiceInfo" protocol="WorldServiceInfo"/>
+	</Protocol>
+	<Protocol name="M2L_ReportWorldActive">
+		<Property type="WorldServiceInfo" name="m_ActiveWorldServiceInfo" default=""/>
+	</Protocol>
+	<Protocol name="M2L_ReportWorldStatus">
+		<Property type="list" name="m_WorldServiceList" protocol="WorldServiceInfo"/>
+	</Protocol>
+	<Protocol name="M2L_ReportWorldErase">
+		<Property type="int32" name="m_WorldNo" default=""/>
+	</Protocol>
+	<Protocol name="M2L_ReportWorldDeActive">
+		<Property type="int32" name="m_WorldNo" default=""/>
+	</Protocol>
+	<Protocol name="L2M_ReportAccountLogin">
+		<Property type="string" name="m_AccountID" default=""/>
+	</Protocol>
+	<Protocol name="M2L_ReportAccountLogin">
+		<Property type="string" name="m_AccountID" default=""/>
+	</Protocol>
+	<Protocol name="L2M_ReportAccountServerSelect">
+		<Property type="string" name="m_AccountID" default=""/>
+		<Property type="int" name="m_WorldNo" default=""/>
+	</Protocol>
+	<Protocol name="M2L_ReportAccountServerSelect">
+		<Property type="string" name="m_AccountID" default=""/>
+		<Property type="int" name="m_WorldNo" default=""/>
+	</Protocol>
+	<Protocol name="M2L_ReportAccountKick">
+		<Property type="string" name="m_AccountID" default=""/>
+		<Property type="nKickType" name="m_KickType" default=""/>
+		<Property type="string" name="m_KickReason" default=""/>
+	</Protocol>
+	
+	<Protocol name="L2M2P_RequestServerSelect">
+		<Property type="string" name="m_AccountID" default=""/>
+		<Property type="string" name="m_NetmarbleID" default=""/>
+		<Property type="int32" name="m_WorldNo" default=""/>
+		<Property type="int64" name="m_SecurityToken" default=""/>
+		<Property type="bool" name="m_IsWhiteList" default=""/>
+		<Property type="bool" name="m_IsSpecialLogin" default=""/>
+		<Property type="int16" name="m_UserGrade" default=""/>
+		<Property type="int16" name="m_PlatformType" default="-1"/>
+		<Property type="int16" name="m_OSType" default="-1"/>
+		<Property type="int16" name="m_MarketType" default="-1"/>
+		<Property type="int16" name="m_CountryCode" default="-1"/>
+		<Property type="int16" name="m_ConnectCountryCode" default="-1"/>
+		<Property type="int16" name="m_Language" default="-1"/>
+		<Property type="string" name="m_TimeZone" default=""/>
+		<Property type="string" name="m_NM_DeviceKey" default=""/>
+		<Property type="string" name="m_NM_ADID" default=""/>
+		<Property type="string" name="m_NM_SLog" default=""/>
+		<Property type="string" name="m_NM_BuildCode" default=""/>
+		<Property type="string" name="m_NM_LauncherID" default=""/>
+	</Protocol>
+	<Protocol name="P2M2L_ResultServerSelect" packet_type="result">
+		<Property type="string" name="m_AccountID" default=""/>
+		<Property type="int64" name="m_SecurityToken" default=""/> 	<!-- 서버에서 발급한 Security Token -->
+		<Property type="int32" name="m_WorldNo" default=""/>
+		<Property type="WaitingInfo" name="m_WaitingInfo" default=""/>
+	</Protocol>
+	
+	<Protocol name="P2M2L_ReportWaitingInfo">
+		<Property type="string" name="m_AccountID" default=""/>
+		<Property type="int64" name="m_SecurityToken" default=""/> 	<!-- 서버에서 발급한 Security Token -->
+		<Property type="int32" name="m_WorldNo" default=""/>
+		<Property type="WaitingInfo" name="m_WaitingInfo" default=""/>
+	</Protocol>
+	
+	<Protocol name="L2M2P_RequestCancelWaiting">
+		<Property type="string" name="m_AccountID" default=""/>
+		<Property type="int64" name="m_SecurityToken" default=""/> 	<!-- 서버에서 발급한 Security Token -->
+		<Property type="int32" name="m_WorldNo" default=""/>
+	</Protocol>
+	<Protocol name="P2M2L_ResultCancelWaiting" packet_type="result">
+		<Property type="string" name="m_AccountID" default=""/>
+		<Property type="int64" name="m_SecurityToken" default=""/> 	<!-- 서버에서 발급한 Security Token -->
+		<Property type="int32" name="m_WorldNo" default=""/>
+	</Protocol>
+	<Protocol name="L2M2P_ReportCancelWaiting">	<!-- 강제 취소 by Lobby -->
+		<Property type="string" name="m_AccountID" default=""/>
+		<Property type="int64" name="m_SecurityToken" default=""/> 	<!-- 서버에서 발급한 Security Token -->
+		<Property type="int32" name="m_WorldNo" default=""/>
+	</Protocol>
+	<Protocol name="P2M2L_ReportCancelWaiting">	<!-- 강제 취소 by Play-->
+		<Property type="string" name="m_AccountID" default=""/>
+		<Property type="int64" name="m_SecurityToken" default=""/> 	<!-- 서버에서 발급한 Security Token -->
+		<Property type="int32" name="m_WorldNo" default=""/>
+		<Property type="int16" name="m_KickType" default=""/>
+	</Protocol>
+
+	<Protocol name="P2M2L_ReportEnterServer">
+		<Property type="string" name="m_AccountID" default=""/>
+		<Property type="int64" name="m_SecurityToken" default=""/> 	<!-- 서버에서 발급한 Security Token -->
+		<Property type="int32" name="m_WorldNo" default=""/>
+		<Property type="int32" name="m_ExpandCharacterSlot" default=""/>
+		<Property type="OffLineHuntingInfo" name="m_OfflineHuntingInfo" default=""/>
+		<Property type="list" name="m_PlayerList" protocol="PlayerData_Lobby"/>
+		<Property type="long long" name="m_MainPlayerKey" default="-1"/>
+	</Protocol>
+	
+	<Protocol name="L2M2P_ReportLobbyUserClosed">
+		<Property type="string" name="m_AccountID" default=""/>
+		<Property type="int32" name="m_WorldNo" default=""/>
+	</Protocol>	
+		
+	<Protocol name="L2M2P_RequestCreatePlayer">
+		<Property type="string" name="m_AccountID" default=""/>
+		<Property type="int64" name="m_SecurityToken" default=""/> 	<!-- 서버에서 발급한 Security Token -->
+		<Property type="int32" name="m_WorldNo" default=""/>
+		<Property type="string" name="m_Name" default=""/>
+		<Property type="int16" name="m_Gender" default=""/>
+		<Property type="int16" name="m_Job" default=""/>
+		<Property type="BodyInfo" name="m_BodyInfo" default=""/>	<!-- Customize 정보 - 추후 구현-->
+		<Property type="bool" name="m_IsMainPlayer" default=""/>
+	</Protocol>
+	<Protocol name="P2M2L_ResultCreatePlayer" packet_type="result">
+		<Property type="string" name="m_AccountID" default=""/>
+		<Property type="int64" name="m_SecurityToken" default=""/> 	<!-- 서버에서 발급한 Security Token -->
+		<Property type="int32" name="m_WorldNo" default=""/>
+		<Property type="PlayerData_Lobby" name="m_NewPlayerData" default=""/>
+	</Protocol>
+	
+	<Protocol name="L2M2P_RequestDeletePlayer">
+		<Property type="string" name="m_AccountID" default=""/>
+		<Property type="int64" name="m_SecurityToken" default=""/> 	<!-- 서버에서 발급한 Security Token -->
+		<Property type="int32" name="m_WorldNo" default=""/>
+		<Property type="int64" name="m_PlayerKey" default=""/>
+	</Protocol>
+	<Protocol name="P2M2L_ResultDeletePlayer" packet_type="result">
+		<Property type="string" name="m_AccountID" default=""/>
+		<Property type="int64" name="m_SecurityToken" default=""/> 	<!-- 서버에서 발급한 Security Token -->
+		<Property type="int32" name="m_WorldNo" default=""/>
+		<Property type="int64" name="m_PlayerKey" default=""/>
+		<Property type="int64" name="m_DeleteTime" default=""/>
+	</Protocol>
+	
+	<Protocol name="L2M2P_RequestRecoverPlayer">
+		<Property type="string" name="m_AccountID" default=""/>
+		<Property type="int64" name="m_SecurityToken" default=""/> 	<!-- 서버에서 발급한 Security Token -->
+		<Property type="int32" name="m_WorldNo" default=""/>
+		<Property type="int64" name="m_PlayerKey" default=""/>
+	</Protocol>
+	<Protocol name="P2M2L_ResultRecoverPlayer" packet_type="result">
+		<Property type="string" name="m_AccountID" default=""/>
+		<Property type="int64" name="m_SecurityToken" default=""/> 	<!-- 서버에서 발급한 Security Token -->
+		<Property type="int32" name="m_WorldNo" default=""/>
+		<Property type="int64" name="m_PlayerKey" default=""/>
+	</Protocol>
+	
+	<Protocol name="L2M2P_RequestSelectPlayer">
+		<Property type="string" name="m_AccountID" default=""/>
+		<Property type="int64" name="m_SecurityToken" default=""/> 	<!-- 서버에서 발급한 Security Token -->
+		<Property type="int32" name="m_WorldNo" default=""/>
+		<Property type="int64" name="m_PlayerKey" default=""/>
+		<Property type="int16" name="m_NM_DeviceRegistStatus" default=""/>
+	</Protocol>
+	<Protocol name="P2M2L_ResultSelectPlayer" packet_type="result">
+		<Property type="string" name="m_AccountID" default=""/>
+		<Property type="int64" name="m_SecurityToken" default=""/> 	<!-- 서버에서 발급한 Security Token -->
+		<Property type="int32" name="m_WorldNo" default=""/>
+		<Property type="int64" name="m_PlayerKey" default=""/>
+	</Protocol>
+	
+	<Protocol name="L2M2P_RequestChangePlayerName">
+		<Property type="string" name="m_AccountID" default=""/>
+		<Property type="int64" name="m_SecurityToken" default=""/> 	<!-- 서버에서 발급한 Security Token -->
+		<Property type="int32" name="m_WorldNo" default=""/>
+		<Property type="int64" name="m_PlayerKey" default=""/>
+		<Property type="string" name="m_ChangeName" default=""/>
+	</Protocol>
+	<Protocol name="P2M2L_ResultChangePlayerName" packet_type="result">
+		<Property type="string" name="m_AccountID" default=""/>
+		<Property type="int64" name="m_SecurityToken" default=""/> 	<!-- 서버에서 발급한 Security Token -->
+		<Property type="int32" name="m_WorldNo" default=""/>
+		<Property type="int64" name="m_PlayerKey" default=""/>
+		<Property type="string" name="m_ChangeName" default=""/>
+	</Protocol>
+	
+	<Protocol name="M2L_ReportPatchRegist">
+	</Protocol>
+	
+	<Protocol name="P2M2L_ReportLobbyKick">
+		<Property type="string" name="m_AccountID" default=""/>
+		<Property type="int64" name="m_SecurityToken" default=""/> 	<!-- 서버에서 발급한 Security Token -->
+		<Property type="int32" name="m_WorldNo" default=""/>
+		<Property type="int16" name="m_KickType" default=""/>
+	</Protocol>
+
+	<Protocol name="L2M_RequestLockerCharacterWithdraw">
+		<Property type="string" name="m_AccountID" default=""/>
+		<Property type="int64" name="m_SecurityToken" default=""/>
+		<Property type="int32" name="m_WorldNo" default=""/>
+		<Property type="vector" name="m_PlayerKeyList" protocol="int64"/>
+	</Protocol>
+	<Protocol name="M2L_ResultLockerCharacterWithdraw" packet_type="result">
+		<Property type="string" name="m_AccountID" default=""/>
+		<Property type="vector" name="m_PlayerKeyList" protocol="int64"/>
+	</Protocol>
+
+	<Protocol name="L2M_RequestAccountGiftReceive">
+		<Property type="string" name="m_ReceiverAccountID" default=""/>
+		<Property type="long long" name="m_ReceiverSecurityToken" default="-1"/>
+		<Property type="string" name="m_Receiver_NM_SLog" default=""/>
+		<Property type="string" name="m_TargetAccountID" default=""/>
+		<Property type="int" name="m_TargetWorldNo" default="-1"/>
+		<Property type="string" name="m_TargetAccountCode" default=""/>
+	</Protocol>
+	<Protocol name="M2L_ResultAccountGiftReceive" packet_type="result">
+		<Property type="string" name="m_ReceiverAccountID" default=""/>
+		<Property type="long long" name="m_ReceiverSecurityToken" default="-1"/>
+		<Property type="nKickType" name="m_ReceiverKickType" default=""/>
+		<Property type="string" name="m_TargetAccountCode" default=""/>
+	</Protocol>
+
+	<Protocol name="M2L_ReportAccountGiftSomeoneReceived">
+		<Property type="string" name="m_AccountID" default=""/>
+		<Property type="int" name="m_WorldNo" default="-1"/>
+		<Property type="string" name="m_AccountCode" default=""/>
+	</Protocol>
+
+	<Protocol name="L2M_RequestMainPlayerChange">
+		<Property type="string" name="m_AccountID" default=""/>
+		<Property type="long long" name="m_SecurityToken" default="-1"/>
+		<Property type="int" name="m_WorldNo" default="-1"/>
+		<Property type="long long" name="m_MainPlayerKey" default="-1"/>
+	</Protocol>
+	<Protocol name="M2L_ResultMainPlayerChange" packet_type="result">
+		<Property type="string" name="m_AccountID" default=""/>
+		<Property type="long long" name="m_SecurityToken" default="-1"/>
+		<Property type="int" name="m_WorldNo" default="-1"/>
+		<Property type="long long" name="m_MainPlayerKey" default="-1"/>
+	</Protocol>
+
+</ProtocolList>

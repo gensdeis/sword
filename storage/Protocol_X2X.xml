@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ProtocolList namespace="Protocol_X2X" protocol="1">
+	<!-- 전처리기 -->
+	<UnrealHead text='#include "../Define_Network/SMessage.h"'/>
+
+	<Protocol name="X2X_HeartBeat">
+	</Protocol>
+	<Protocol name="X2X_HeartBeatAck">
+		<Property type="uint64" name="m_AckValue" default=""/>
+	</Protocol>
+	<Protocol name="X2X_ReportPacketParseFail">
+		<Property type="uint16" name="m_Protocol" default=""/>
+	</Protocol>
+	<Protocol name="X2X_ReportPacketTest">
+		<Property type="string" name="m_Data" default=""/>
+	</Protocol>
+</ProtocolList>
